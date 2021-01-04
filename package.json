@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.3.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -33,6 +34,7 @@
   },
   "eslintConfig": {
     "rules": {
+      "import/no-extraneous-dependencies": [ "error", { "packageDir": "./" } ],
       "react/jsx-props-no-spreading": [
         "error",
         {
@@ -42,12 +44,14 @@
     },
     "overrides": [
       {
-          "files": ["**/*.tsx"],
-          "rules": {
-              "react/prop-types": "off"
-          }
+        "files": [
+          "**/*.tsx"
+        ],
+        "rules": {
+          "react/prop-types": "off"
+        }
       }
-  ],
+    ],
     "extends": [
       "airbnb-typescript"
     ],
