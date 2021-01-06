@@ -14,31 +14,38 @@ import { getItem } from './utils/localstorage';
 
 interface PrivateRouteProps {
   component: any,
-  authed: String | Boolean
+  direction?: String,
   [key: string]: any,
 }
 
-function PrivateRoute({ component: Component, authed, ...rest } : PrivateRouteProps) {
+function PrivateRoute({
+  component: Component, direction, login, ...rest
+} : PrivateRouteProps) {
   return (
     <Route
       {...rest}
-      render={(props) => (authed === true
-        ? <Component {...props} />
-        : <Redirect to={{ pathname: '/login' }} />)}
+      render={
+        (props) => (getItem('access_token')
+          ? <Component {...props} />
+          : <Redirect to={{ pathname: direction }} />)
+      }
     />
   );
 }
 
+PrivateRoute.defaultProps = {
+  direction: '/login',
+};
+
 const queryClient = new QueryClient();
-const isAuthenticated = !!getItem('access_token');
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Switch>
+          <PrivateRoute exact path="/" component={Dashboard} />
           <Route path="/login" component={Login} />
-          <PrivateRoute authed={isAuthenticated} path="/" component={Dashboard} />
         </Switch>
       </Router>
       <ReactQueryDevtools initialIsOpen />

@@ -17,7 +17,7 @@
     "axios": "^0.21.1",
     "history": "^5.0.0",
     "node-sass": "4.14.1",
-    "react": "^17.0.1",
+    "react": "16.14.0",
     "react-dom": "^17.0.1",
     "react-query": "^3.5.9",
     "react-router-dom": "^5.2.0",
@@ -34,7 +34,12 @@
   },
   "eslintConfig": {
     "rules": {
-      "import/no-extraneous-dependencies": [ "error", { "packageDir": "./" } ],
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          "packageDir": "./"
+        }
+      ],
       "react/jsx-props-no-spreading": [
         "error",
         {

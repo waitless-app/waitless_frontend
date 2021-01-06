@@ -15,7 +15,7 @@ const Login: React.FC<LoginProps> = ({ history }) => {
   const onLoginSuccess = (data: { access: string, refresh: string}) => {
     setItem('access_token', data.access);
     setItem('refresh_token', data.refresh);
-    history.push('/dashboard');
+    history.push('/');
   };
 
   const onFinish = (values: {email: string, password: string, remember: boolean}) => {
