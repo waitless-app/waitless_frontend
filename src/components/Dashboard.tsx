@@ -4,6 +4,7 @@ import {
 } from 'antd';
 import {
   ShopOutlined, TagsOutlined, MessageOutlined, UserOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 import {
   useHistory,
@@ -12,7 +13,6 @@ import {
 import { removeItem } from '../utils/localstorage';
 import Premises from './Premises';
 
-const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 // @ts-ignore
@@ -32,8 +32,6 @@ const Dashboard = ({ match }) => {
       </Menu.Item>
     </Menu>
   );
-  // @ts-ignore
-  // @ts-ignore
   // @ts-ignore
   return (
     <>
@@ -55,21 +53,11 @@ const Dashboard = ({ match }) => {
               defaultOpenKeys={['sub1']}
               style={{ height: '100%', borderRight: 0 }}
             >
-              <SubMenu key="sub1" icon={<ShopOutlined />} title="Premises">
-                <Menu.Item key="1">Your premises</Menu.Item>
-              </SubMenu>
-              <SubMenu key="sub2" icon={<TagsOutlined />} title="Products">
-                <Menu.Item key="5">option5</Menu.Item>
-                <Menu.Item key="6">option6</Menu.Item>
-                <Menu.Item key="7">option7</Menu.Item>
-                <Menu.Item key="8">option8</Menu.Item>
-              </SubMenu>
-              <SubMenu key="sub3" icon={<MessageOutlined />} title="News">
-                <Menu.Item key="9">option9</Menu.Item>
-                <Menu.Item key="10">option10</Menu.Item>
-                <Menu.Item key="11">option11</Menu.Item>
-                <Menu.Item key="12">option12</Menu.Item>
-              </SubMenu>
+              <Menu.Item key="home" onClick={() => history.push(`${match.url}`)} icon={<HomeOutlined />}>Home</Menu.Item>
+              <Menu.Item key="premises" onClick={() => history.push(`${match.url}/premises`)} icon={<ShopOutlined />}>Premises</Menu.Item>
+              <Menu.Item key="products" icon={<TagsOutlined />}>Products</Menu.Item>
+              <Menu.Item key="news" icon={<MessageOutlined />}>News</Menu.Item>
+              <Menu.Item key="profile" icon={<UserOutlined />}>Profile</Menu.Item>
             </Menu>
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
@@ -85,8 +73,8 @@ const Dashboard = ({ match }) => {
                 minHeight: 280,
               }}
             >
-              <Route path={`${match.url}/premises`} render={() => <div>Hello</div>} />
-              <Route path={`${match.url}/premises1`} component={Premises} />
+              <Route exact path={`${match.url}/`} render={() => <div>Home</div>} />
+              <Route path={`${match.url}/premises`} component={Premises} />
             </Content>
           </Layout>
         </Layout>
