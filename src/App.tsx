@@ -44,7 +44,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Switch>
-          <PrivateRoute exact path="/" component={Dashboard} />
+          <PrivateRoute path="/dashboard" component={Dashboard} />
           <Route path="/login" component={Login} />
         </Switch>
       </Router>
