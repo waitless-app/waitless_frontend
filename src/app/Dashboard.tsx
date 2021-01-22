@@ -11,7 +11,7 @@ import {
   Route, useRouteMatch,
 } from 'react-router-dom';
 import { removeItem } from '../utils/localstorage';
-import Premises from './Premises';
+import Premises from '../premises/Premises';
 
 const { Header, Content, Sider } = Layout;
 

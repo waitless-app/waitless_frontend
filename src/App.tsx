@@ -8,8 +8,8 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
+import Login from './app/Login';
+import Dashboard from './app/Dashboard';
 import { getItem } from './utils/localstorage';
 
 interface PrivateRouteProps {
@@ -44,6 +44,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Switch>
+          <Route exact path="/">
+            <Redirect to="/dashboard" />
+          </Route>
           <PrivateRoute path="/dashboard" component={Dashboard} />
           <Route path="/login" component={Login} />
         </Switch>

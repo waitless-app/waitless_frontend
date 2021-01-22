@@ -1,12 +1,15 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import { RouteComponentProps } from 'react-router-dom';
+import {
+  Route, RouteComponentProps, useHistory, useRouteMatch,
+} from 'react-router-dom';
 import {
   Table, Space, Button, Row, Col,
 } from 'antd';
 import { PremisesService } from '../services/api.service';
+import PremisesCreate from './PremisesCreate';
 
-const Premises: React.FunctionComponent<RouteComponentProps> = () => {
+const Premises: React.FunctionComponent<RouteComponentProps> = ({ match }) => {
   type TResult = {
     data: Array<object>
   };
@@ -50,17 +53,23 @@ const Premises: React.FunctionComponent<RouteComponentProps> = () => {
       ),
     }];
 
+  const history = useHistory();
+  const handleRedirect = (route: string) => {
+    history.push(route);
+  };
+  const { path } = useRouteMatch();
   return (
-    <div>
-      <>
+    <>
+      <Route exact path={path}>
         <Row justify="end">
           <Col style={{ marginBottom: '1em' }}>
-            <Button type="primary">Create New Premises</Button>
+            <Button type="primary" onClick={() => handleRedirect(`${match.url}/create`)}>Create New Premises</Button>
           </Col>
         </Row>
         <Table columns={columns} dataSource={data?.data} />
-      </>
-    </div>
+      </Route>
+      <Route exact path={`${path}/create`} component={PremisesCreate} />
+    </>
   );
 };
 
