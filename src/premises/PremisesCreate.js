@@ -8,11 +8,9 @@ import {
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
-type SizeType = Parameters<typeof Form>[0]['size'];
-
 const PremisesCreate = () => {
-  const [componentSize, setComponentSize] = useState<SizeType | 'default'>('default');
-  const onFormLayoutChange = ({ size }: { size: SizeType }) => {
+  const [componentSize, setComponentSize] = useState('default');
+  const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
   const { TextArea } = Input;
@@ -24,7 +22,7 @@ const PremisesCreate = () => {
         layout="horizontal"
         initialValues={{ size: componentSize }}
         onValuesChange={onFormLayoutChange}
-        size={componentSize as SizeType}
+        size={componentSize}
       >
         <Form.Item label="Name">
           <Input />

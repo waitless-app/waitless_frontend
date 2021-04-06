@@ -12,15 +12,9 @@ import Login from './app/Login';
 import Dashboard from './app/Dashboard';
 import { getItem } from './utils/localstorage';
 
-interface PrivateRouteProps {
-  component: any,
-  direction?: String,
-  [key: string]: any,
-}
-
 function PrivateRoute({
   component: Component, direction, login, ...rest
-} : PrivateRouteProps) {
+}) {
   return (
     <Route
       {...rest}

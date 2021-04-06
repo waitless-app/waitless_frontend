@@ -9,13 +9,16 @@ import {
 import { PremisesService } from '../services/api.service';
 import PremisesCreate from './PremisesCreate';
 
-const Premises: React.FunctionComponent<RouteComponentProps> = ({ match }) => {
-  type TResult = {
-    data: Array<object>
+const Premises = ({ match }) => {
+  const history = useHistory();
+  const handleRedirect = (route) => {
+    history.push(route);
   };
+
+  const { path } = useRouteMatch();
   const {
     isLoading, error, data,
-  } = useQuery<TResult, Error>('repoData', () => PremisesService.query());
+  } = useQuery('repoData', () => PremisesService.query());
   if (isLoading) return (<>Loading...</>);
 
   if (error) {
@@ -53,11 +56,6 @@ const Premises: React.FunctionComponent<RouteComponentProps> = ({ match }) => {
       ),
     }];
 
-  const history = useHistory();
-  const handleRedirect = (route: string) => {
-    history.push(route);
-  };
-  const { path } = useRouteMatch();
   return (
     <>
       <Route exact path={path}>

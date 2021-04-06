@@ -6,25 +6,21 @@ import { History } from 'history';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
-interface LoginProps {
-  token?: string,
-  history: History,
-}
 
-const Login: React.FC<LoginProps> = ({ history }) => {
-  const onLoginSuccess = (data: { access: string, refresh: string}) => {
+const Login = ({ history }) => {
+  const onLoginSuccess = (data) => {
     setItem('access_token', data.access);
     setItem('refresh_token', data.refresh);
     history.push('/');
   };
 
-  const onFinish = (values: {email: string, password: string, remember: boolean}) => {
+  const onFinish = (values) => {
     console.log(values);
     AuthService.login({ email: values.email, password: values.password })
       .then(({ data }) => onLoginSuccess(data));
   };
 
-  const onFinishFailed = (errorInfo: any) => {
+  const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
 
