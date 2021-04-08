@@ -1,10 +1,10 @@
 import React from 'react';
-import { useQuery } from 'react-query';
+import {useMutation, useQuery} from 'react-query';
 import {
   Route, RouteComponentProps, useHistory, useRouteMatch,
 } from 'react-router-dom';
 import {
-  Table, Space, Button, Row, Col,
+  Table, Space, Button, Row, Col, message,
 } from 'antd';
 import { PremisesService } from '../services/api.service';
 import PremisesCreate from './PremisesCreate';
@@ -14,12 +14,23 @@ const Premises = ({ match }) => {
   const handleRedirect = (route) => {
     history.push(route);
   };
-
   const { path } = useRouteMatch();
+  const mutation = useMutation(premises => PremisesService.post(premises), {
+   onSuccess: (data, variables, context) => {
+      message.success('Todo added!');
+   },
+   onSettled: (data, error, variables, context) => {
+     message.error("error");
+   },
+  })
   const {
     isLoading, error, data,
   } = useQuery('repoData', () => PremisesService.query());
   if (isLoading) return (<>Loading...</>);
+  const handleFormSubmit = (premises) => {
+    console.log(premises);
+    mutation.mutate(premises);
+  };
 
   if (error) {
     return (<div>{`An error has occurred: ${error.message}`}</div>);
@@ -66,7 +77,10 @@ const Premises = ({ match }) => {
         </Row>
         <Table columns={columns} dataSource={data?.data} />
       </Route>
-      <Route exact path={`${path}/create`} component={PremisesCreate} />
+      <Route exact path={`${path}/create`}
+      render={(props) => (
+          <PremisesCreate {...props} handleFormSubmit={handleFormSubmit}/>
+      )} />
     </>
   );
 };

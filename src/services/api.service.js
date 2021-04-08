@@ -42,6 +42,9 @@ export const PremisesService = {
   get(slug) {
     return ApiService.get('premises/premises/', `${slug}`);
   },
+  post(params) {
+    return ApiService.post('premises/premises/', params);
+  },
 };
 
 export const MenuService = {
