@@ -45,6 +45,9 @@ export const PremisesService = {
   post(params) {
     return ApiService.post('premises/premises/', params);
   },
+  delete(slug) {
+    return ApiService.delete(`premises/premises/${slug}/`);
+  }
 };
 
 export const MenuService = {

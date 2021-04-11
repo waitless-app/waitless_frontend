@@ -1,34 +1,53 @@
 import React from 'react';
-import {useMutation, useQuery} from 'react-query';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
 import {
-  Route, RouteComponentProps, useHistory, useRouteMatch,
+  Route, useHistory, useRouteMatch,
 } from 'react-router-dom';
 import {
-  Table, Space, Button, Row, Col, message,
+  Table, Space, Button, Row, Col, message, Popconfirm,
 } from 'antd';
 import { PremisesService } from '../services/api.service';
 import PremisesCreate from './PremisesCreate';
 
 const Premises = ({ match }) => {
   const history = useHistory();
+  const queryClient = useQueryClient()
   const handleRedirect = (route) => {
     history.push(route);
   };
   const { path } = useRouteMatch();
+    const removePremisesMutation = useMutation(premisesID => PremisesService.delete(premisesID), {
+      onSuccess: (data, variables, context) => {
+      message.success('Premises removed');
+      queryClient.invalidateQueries('premises');
+   },
+     onError: (data, error, variables, context) => {
+       message.error("Error");
+     },
+      onSettled: () => {
+        queryClient.invalidateQueries('premises');
+      },
+  })
   const mutation = useMutation(premises => PremisesService.post(premises), {
    onSuccess: (data, variables, context) => {
-      message.success('Todo added!');
+      message.success('Premises created');
+      queryClient.invalidateQueries('premises');
+      handleRedirect(`${match.url}`);
    },
-   onSettled: (data, error, variables, context) => {
-     message.error("error");
+   onError: (data, error, variables, context) => {
+     message.error("Error");
    },
-  })
+  });
   const {
     isLoading, error, data,
-  } = useQuery('repoData', () => PremisesService.query());
+  } = useQuery('premises', () => PremisesService.query());
   if (isLoading) return (<>Loading...</>);
+
+  const handlePremisesRemove = (premises) => {
+      removePremisesMutation.mutate(premises.id)
+  }
+
   const handleFormSubmit = (premises) => {
-    console.log(premises);
     mutation.mutate(premises);
   };
 
@@ -59,13 +78,24 @@ const Premises = ({ match }) => {
     {
       title: 'Action',
       key: 'action',
-      render: () => (
+      render: (text, record) => (
         <Space size="middle">
           <Button type="primary">Edit</Button>
-          <Button danger>Remove</Button>
+          <Popconfirm
+            title="Are you sure to delete this premises?"
+            onConfirm={() => confirm(record)}
+            okText="Yes"
+            cancelText="No"
+            >
+              <Button danger>Remove</Button>
+          </Popconfirm>
         </Space>
       ),
     }];
+
+  function confirm(premises) {
+    handlePremisesRemove(premises);
+  }
 
   return (
     <>
