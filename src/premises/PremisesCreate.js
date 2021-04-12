@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import {
-  Form,
-  Input,
-  Button,
-  TreeSelect,
-  Upload,
-  message
+    Form,
+    Input,
+    Button,
+    TreeSelect,
+    Upload,
+    message, Spin
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import {toBase64} from "../utils/utils";
+import {useQuery} from "react-query";
 
-const PremisesCreate = ({handleFormSubmit}) => {
+const PremisesCreate = ({handleFormSubmit, match, usePremises }) => {
+  const { id } = match.params;
+  const { status, data, error, isFetching } = usePremises(id);
+  const initialData = id ? data?.data : false;
   const [componentSize, setComponentSize] = useState('default');
   const [file, setFile] = useState();
   const [form] = Form.useForm();
@@ -22,19 +26,20 @@ const PremisesCreate = ({handleFormSubmit}) => {
     handleFormSubmit({ ...payload, image: await toBase64(file)});
     form.resetFields();
   };
-
   const { TextArea } = Input;
   return (
     <>
-      <Form
+        { isFetching
+        ? ( <div className="spin"><Spin tip="Loading..." spinning={isFetching} /></div> )
+        : ( <Form
         form={form}
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         layout="horizontal"
-        initialValues={{ size: componentSize }}
+        initialValues={{ size: componentSize, ...initialData }}
         onValuesChange={onFormLayoutChange}
         size={componentSize}
-         onFinish={onFinish}
+        onFinish={onFinish}
       >
         <Form.Item label="Name" name="name" rules={[{ required: true, message: "Name is required"}]}>
           <Input />
@@ -79,7 +84,7 @@ const PremisesCreate = ({handleFormSubmit}) => {
           </Button>
         </Form.Item>
 
-      </Form>
+      </Form>)}
     </>
   );
 };

@@ -15,6 +15,13 @@ const Premises = ({ match }) => {
   const handleRedirect = (route) => {
     history.push(route);
   };
+
+  function usePremises(premisesId) {
+    return useQuery(["premise", premisesId], () => PremisesService.get(premisesId), {
+      enabled: !!premisesId,
+    });
+  }
+
   const { path } = useRouteMatch();
     const removePremisesMutation = useMutation(premisesID => PremisesService.delete(premisesID), {
       onSuccess: (data, variables, context) => {
@@ -80,7 +87,7 @@ const Premises = ({ match }) => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button type="primary">Edit</Button>
+          <Button type="primary" onClick={() => handleRedirect(`${match.url}/edit/${record.id}`)}>Edit</Button>
           <Popconfirm
             title="Are you sure to delete this premises?"
             onConfirm={() => confirm(record)}
@@ -110,6 +117,10 @@ const Premises = ({ match }) => {
       <Route exact path={`${path}/create`}
       render={(props) => (
           <PremisesCreate {...props} handleFormSubmit={handleFormSubmit}/>
+      )} />
+      <Route exact path={`${path}/edit/:id`}
+      render={(props) => (
+          <PremisesCreate {...props} editMode={true} handleFormSubmit={handleFormSubmit} usePremises={usePremises}/>
       )} />
     </>
   );

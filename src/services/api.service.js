@@ -40,7 +40,7 @@ export const PremisesService = {
     return ApiService.query('premises/premises/', { params });
   },
   get(slug) {
-    return ApiService.get('premises/premises/', `${slug}`);
+    return ApiService.get('premises/premises', `${slug}`);
   },
   post(params) {
     return ApiService.post('premises/premises/', params);
