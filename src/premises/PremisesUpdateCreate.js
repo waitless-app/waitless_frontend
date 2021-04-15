@@ -9,22 +9,27 @@ import {
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import {toBase64} from "../utils/utils";
-import {useQuery} from "react-query";
 
-const PremisesCreate = ({handleFormSubmit, match, usePremises }) => {
+const PremisesUpdateCreate = ({handleFormSubmit, match, usePremises, editMode }) => {
   const { id } = match.params;
-  const { status, data, error, isFetching } = usePremises(id);
-  const initialData = id ? data?.data : false;
+
+  const initialData = () => {
+      if(id) {
+          const { data: { image, ...rest } } = data;
+          return rest;
+      }
+      return false
+  }
   const [componentSize, setComponentSize] = useState('default');
-  const [file, setFile] = useState();
   const [form] = Form.useForm();
   const onFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
    const onFinish = async (values) => {
-     const { image: { file }, ...payload} = values;
-    handleFormSubmit({ ...payload, image: await toBase64(file)});
-    form.resetFields();
+       console.log(values);
+    // const { image: { file }, ...payload} = values;
+    // handleFormSubmit({ ...payload, image: await toBase64(file)});
+    // form.resetFields();
   };
   const { TextArea } = Input;
   return (
@@ -36,7 +41,7 @@ const PremisesCreate = ({handleFormSubmit, match, usePremises }) => {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 14 }}
         layout="horizontal"
-        initialValues={{ size: componentSize, ...initialData }}
+        initialValues={{ size: componentSize, ...initialData() }}
         onValuesChange={onFormLayoutChange}
         size={componentSize}
         onFinish={onFinish}
@@ -50,7 +55,7 @@ const PremisesCreate = ({handleFormSubmit, match, usePremises }) => {
         <Form.Item
           label="Upload Thumbnail"
           name="image"
-           rules={[{ required: true, message: "Image is required"}]}
+           rules={[{ required: !editMode , message: "Image is required"}]}
         >
              <Upload accept=".png" beforeUpload={() => false} multiple={false}>
                   <Button icon={<UploadOutlined />}>
@@ -80,7 +85,7 @@ const PremisesCreate = ({handleFormSubmit, match, usePremises }) => {
         </Form.Item>
         <Form.Item wrapperCol={{ span: 8, offset: 4 }}>
           <Button type="primary" htmlType="submit">
-            Submit
+              { editMode ? 'Edit' : 'Create'}
           </Button>
         </Form.Item>
 
@@ -89,4 +94,4 @@ const PremisesCreate = ({handleFormSubmit, match, usePremises }) => {
   );
 };
 
-export default PremisesCreate;
+export default PremisesUpdateCreate;

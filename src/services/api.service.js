@@ -19,13 +19,12 @@ const ApiService = {
   },
 
   update(resource, slug, params) {
-    return instance.put(`${resource}/${slug}`, params);
+    return instance.patch(`${resource}/${slug}/`, params);
   },
 
   put(resource, params) {
     return instance.put(`${resource}`, params);
   },
-
   delete(resource) {
     return instance.delete(resource).catch((error) => {
       throw new Error(`[WL] ApiService ${error}`);
@@ -42,12 +41,15 @@ export const PremisesService = {
   get(slug) {
     return ApiService.get('premises/premises', `${slug}`);
   },
+  update(slug, params) {
+    return ApiService.update('premises/premises', slug, { params });
+  },
   post(params) {
     return ApiService.post('premises/premises/', params);
   },
   delete(slug) {
     return ApiService.delete(`premises/premises/${slug}/`);
-  }
+  },
 };
 
 export const MenuService = {

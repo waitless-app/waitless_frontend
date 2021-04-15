@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
-import {useMutation, useQuery, useQueryClient} from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   Route, useHistory, useRouteMatch,
 } from 'react-router-dom';
@@ -7,55 +8,35 @@ import {
   Table, Space, Button, Row, Col, message, Popconfirm,
 } from 'antd';
 import { PremisesService } from '../services/api.service';
-import PremisesCreate from './PremisesCreate';
+import { UpdatePremises } from './UpdatePremises';
+import { CreatePremises } from './CreatePremises';
 
-const Premises = ({ match }) => {
+const Premises = () => {
   const history = useHistory();
-  const queryClient = useQueryClient()
+  const { url, path } = useRouteMatch();
+  const queryClient = useQueryClient();
   const handleRedirect = (route) => {
     history.push(route);
   };
-
-  function usePremises(premisesId) {
-    return useQuery(["premise", premisesId], () => PremisesService.get(premisesId), {
-      enabled: !!premisesId,
-    });
-  }
-
-  const { path } = useRouteMatch();
-    const removePremisesMutation = useMutation(premisesID => PremisesService.delete(premisesID), {
-      onSuccess: (data, variables, context) => {
+  const removePremisesMutation = useMutation((premisesID) => PremisesService.delete(premisesID), {
+    onSuccess: () => {
       message.success('Premises removed');
+    },
+    onError: () => {
+      message.error('Error');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries('premises');
-   },
-     onError: (data, error, variables, context) => {
-       message.error("Error");
-     },
-      onSettled: () => {
-        queryClient.invalidateQueries('premises');
-      },
-  })
-  const mutation = useMutation(premises => PremisesService.post(premises), {
-   onSuccess: (data, variables, context) => {
-      message.success('Premises created');
-      queryClient.invalidateQueries('premises');
-      handleRedirect(`${match.url}`);
-   },
-   onError: (data, error, variables, context) => {
-     message.error("Error");
-   },
+    },
   });
+
   const {
     isLoading, error, data,
   } = useQuery('premises', () => PremisesService.query());
   if (isLoading) return (<>Loading...</>);
 
   const handlePremisesRemove = (premises) => {
-      removePremisesMutation.mutate(premises.id)
-  }
-
-  const handleFormSubmit = (premises) => {
-    mutation.mutate(premises);
+    removePremisesMutation.mutate(premises.id);
   };
 
   if (error) {
@@ -87,43 +68,43 @@ const Premises = ({ match }) => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <Button type="primary" onClick={() => handleRedirect(`${match.url}/edit/${record.id}`)}>Edit</Button>
+          <Button type="primary" onClick={() => handleRedirect(`${url}/edit/${record.id}`)}>Edit</Button>
           <Popconfirm
             title="Are you sure to delete this premises?"
-            onConfirm={() => confirm(record)}
+            onConfirm={() => handlePremisesRemove(record)}
             okText="Yes"
             cancelText="No"
-            >
-              <Button danger>Remove</Button>
+          >
+            <Button danger>Remove</Button>
           </Popconfirm>
         </Space>
       ),
     }];
-
-  function confirm(premises) {
-    handlePremisesRemove(premises);
-  }
-
   return (
     <>
       <Route exact path={path}>
         <Row justify="end">
           <Col style={{ marginBottom: '1em' }}>
-            <Button type="primary" onClick={() => handleRedirect(`${match.url}/create`)}>Create New Premises</Button>
+            <Button type="primary" onClick={() => handleRedirect(`${url}/create`)}>Create New Premises</Button>
           </Col>
         </Row>
         <Table columns={columns} dataSource={data?.data} />
       </Route>
-      <Route exact path={`${path}/create`}
-      render={(props) => (
-          <PremisesCreate {...props} handleFormSubmit={handleFormSubmit}/>
-      )} />
-      <Route exact path={`${path}/edit/:id`}
-      render={(props) => (
-          <PremisesCreate {...props} editMode={true} handleFormSubmit={handleFormSubmit} usePremises={usePremises}/>
-      )} />
+      <Route
+        exact
+        path={`${path}/create`}
+        render={(props) => (
+          <CreatePremises {...props} />
+        )}
+      />
+      <Route
+        exact
+        path={`${path}/edit/:id`}
+        render={(props) => (
+          <UpdatePremises {...props} />
+        )}
+      />
     </>
   );
 };
-
 export default Premises;

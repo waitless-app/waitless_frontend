@@ -17,8 +17,8 @@ function accessStorage(action) {
   }
 }
 
-const setItem = (key, value)  => accessStorage(localStorage.setItem(key, value));
-const getItem = (key)  => accessStorage(localStorage.getItem(key));
+const setItem = (key, value) => accessStorage(localStorage.setItem(key, value));
+const getItem = (key) => accessStorage(localStorage.getItem(key));
 const removeItem = (key) => accessStorage(localStorage.removeItem(key));
 
 export { setItem, getItem, removeItem };

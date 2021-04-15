@@ -1,13 +1,14 @@
 import React from 'react';
 import {
-  Row, Col, Form, Input, Button, Checkbox,
+  Row, Col, Form, Input, Button, Checkbox, message,
 } from 'antd';
-import { History } from 'history';
+import { useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
+const Login = () => {
+  const history = useHistory();
 
-const Login = ({ history }) => {
   const onLoginSuccess = (data) => {
     setItem('access_token', data.access);
     setItem('refresh_token', data.refresh);
@@ -15,13 +16,12 @@ const Login = ({ history }) => {
   };
 
   const onFinish = (values) => {
-    console.log(values);
     AuthService.login({ email: values.email, password: values.password })
       .then(({ data }) => onLoginSuccess(data));
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    message.error(`Error, ${errorInfo}`);
   };
 
   return (

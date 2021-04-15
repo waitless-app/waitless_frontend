@@ -1,4 +1,6 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
+
 import './App.scss';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import {
@@ -8,12 +10,13 @@ import {
   Redirect,
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import * as PropTypes from 'prop-types';
 import Login from './app/Login';
 import Dashboard from './app/Dashboard';
 import { getItem } from './utils/localstorage';
 
 function PrivateRoute({
-  component: Component, direction, login, ...rest
+  component: Component, direction, ...rest
 }) {
   return (
     <Route
@@ -26,7 +29,10 @@ function PrivateRoute({
     />
   );
 }
-
+PrivateRoute.propTypes = {
+  direction: PropTypes.string,
+  component: PropTypes.elementType.isRequired,
+};
 PrivateRoute.defaultProps = {
   direction: '/login',
 };
@@ -49,5 +55,4 @@ function App() {
     </QueryClientProvider>
   );
 }
-
 export default App;
