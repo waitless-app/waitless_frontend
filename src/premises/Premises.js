@@ -32,7 +32,9 @@ const Premises = () => {
 
   const {
     isLoading, error, data,
-  } = useQuery('premises', () => PremisesService.query());
+  } = useQuery('premises', () => PremisesService.query(), {
+    staleTime: 1000 * 60,
+  });
   if (isLoading) return (<>Loading...</>);
 
   const handlePremisesRemove = (premises) => {

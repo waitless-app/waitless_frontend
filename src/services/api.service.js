@@ -57,7 +57,13 @@ export const MenuService = {
     return ApiService.query(`premises/premises/${slug}/menu/`, { params });
   },
   get(slug) {
-    return ApiService.get('premises/premises', `${slug}/menu/`);
+    return ApiService.get('product/menu', `${slug}`);
+  },
+  post(params) {
+    return ApiService.post('product/menu/', params);
+  },
+  update(slug, params) {
+    return ApiService.update('product/menu', slug, { params });
   },
 };
 
