@@ -1,31 +1,27 @@
 import React from 'react';
 import {
-  Row, Col, Form, Input, Button, Checkbox,
+  Row, Col, Form, Input, Button, Checkbox, message,
 } from 'antd';
-import { History } from 'history';
+import { useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
-interface LoginProps {
-  token?: string,
-  history: History,
-}
+const Login = () => {
+  const history = useHistory();
 
-const Login: React.FC<LoginProps> = ({ history }) => {
-  const onLoginSuccess = (data: { access: string, refresh: string}) => {
+  const onLoginSuccess = (data) => {
     setItem('access_token', data.access);
     setItem('refresh_token', data.refresh);
     history.push('/');
   };
 
-  const onFinish = (values: {email: string, password: string, remember: boolean}) => {
-    console.log(values);
+  const onFinish = (values) => {
     AuthService.login({ email: values.email, password: values.password })
       .then(({ data }) => onLoginSuccess(data));
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed = (errorInfo) => {
+    message.error(`Error, ${errorInfo}`);
   };
 
   return (

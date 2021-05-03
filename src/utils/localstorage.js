@@ -1,4 +1,4 @@
-function accessStorage(action: any) {
+function accessStorage(action) {
   try {
     return action;
   } catch (e) {
@@ -17,8 +17,8 @@ function accessStorage(action: any) {
   }
 }
 
-const setItem = (key: string, value: any) : void => accessStorage(localStorage.setItem(key, value));
-const getItem = (key: string) : any => accessStorage(localStorage.getItem(key));
-const removeItem = (key: string) : void => accessStorage(localStorage.removeItem(key));
+const setItem = (key, value) => accessStorage(localStorage.setItem(key, value));
+const getItem = (key) => accessStorage(localStorage.getItem(key));
+const removeItem = (key) => accessStorage(localStorage.removeItem(key));
 
 export { setItem, getItem, removeItem };

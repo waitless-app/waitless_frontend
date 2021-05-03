@@ -16,10 +16,9 @@ import Premises from '../premises/Premises';
 const { Header, Content, Sider } = Layout;
 
 // @ts-ignore
-const Dashboard = ({ match }) => {
+const Dashboard = () => {
   const history = useHistory();
-  const { path } = useRouteMatch();
-  console.log(path);
+  const match = useRouteMatch();
 
   const logOut = () => {
     removeItem('access_token');
