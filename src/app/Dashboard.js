@@ -13,6 +13,7 @@ import {
 import { removeItem } from '../utils/localstorage';
 import Premises from '../premises/Premises';
 import Menus from '../menu/Menus';
+import Product from '../product/Product';
 
 const { Header, Content, Sider } = Layout;
 
@@ -56,9 +57,9 @@ const Dashboard = () => {
               <Menu.Item key="home" onClick={() => history.push(`${match.url}`)} icon={<HomeOutlined />}>Home</Menu.Item>
               <Menu.Item key="premises" onClick={() => history.push(`${match.url}/premises`)} icon={<ShopOutlined />}>Premises</Menu.Item>
               <Menu.Item key="menus" onClick={() => history.push(`${match.url}/menus`)} icon={<ContainerOutlined />}>Menus</Menu.Item>
-              <Menu.Item key="products" icon={<TagsOutlined />}>Products</Menu.Item>
-              <Menu.Item key="news" icon={<MessageOutlined />}>News</Menu.Item>
-              <Menu.Item key="profile" icon={<UserOutlined />}>Profile</Menu.Item>
+              <Menu.Item key="products" onClick={() => history.push(`${match.url}/product`)} icon={<TagsOutlined />}>Products</Menu.Item>
+              <Menu.Item key="news" disabled icon={<MessageOutlined />}>News</Menu.Item>
+              <Menu.Item key="profile" disabled icon={<UserOutlined />}>Profile</Menu.Item>
             </Menu>
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
@@ -77,6 +78,7 @@ const Dashboard = () => {
               <Route exact path={`${match.url}/`} render={() => <div>Home</div>} />
               <Route path={`${match.url}/premises`} component={Premises} />
               <Route path={`${match.url}/menus`} component={Menus} />
+              <Route path={`${match.url}/product`} component={Product} />
             </Content>
           </Layout>
         </Layout>

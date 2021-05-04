@@ -67,6 +67,21 @@ export const MenuService = {
   },
 };
 
+export const ProductService = {
+  query(params) {
+    return ApiService.query('/product/products', { params });
+  },
+  get(slug) {
+    return ApiService.get('/product/products', `${slug}`);
+  },
+  post(params) {
+    return ApiService.post('/product/products/', params);
+  },
+  update(slug, params) {
+    return ApiService.update('/product/products', slug, { params });
+  },
+};
+
 export const UserService = {
   get() {
     return ApiService.get('user/me');
