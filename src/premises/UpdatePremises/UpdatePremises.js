@@ -15,7 +15,7 @@ export const UpdatePremises = () => {
   const {
     mutate: updatePremises,
     isLoading: isMutating,
-  } = useMutation((slug, premises) => PremisesService.update(slug, premises), {
+  } = useMutation((premises) => PremisesService.update(premises.id, premises), {
     onSuccess: () => {
       message.success('Premises updated');
       queryClient.invalidateQueries('premises');
@@ -31,7 +31,7 @@ export const UpdatePremises = () => {
     // Convert new image to base64 any other way remove property
     if (payload.image && payload.image.file) payload.image = await toBase64(payload.image.file);
     else delete payload.image;
-    await updatePremises(id, premises);
+    await updatePremises({ id, ...payload });
   };
 
   if (isLoading) {
