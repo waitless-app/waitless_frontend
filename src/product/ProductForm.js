@@ -1,23 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Form,
   Input,
   Button,
-  TreeSelect,
   Upload, Image, Space, Select,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import PropTypes from 'prop-types';
 
 const ProductForm = ({
-  defaultValues, onFormSubmit, isLoading, premises, fetchMenusByPremises,
+  defaultValues, defaultPremise, onFormSubmit, isLoading, premises, fetchMenusByPremises,
 }) => {
   const [form] = Form.useForm();
+  const [premisesId, setPremisesId] = useState(defaultPremise);
   const onFinish = (values) => {
     onFormSubmit(values);
   };
 
-  const { data } = fetchMenusByPremises(form.premises);
+  const changePremises = (value) => {
+    setPremisesId(value);
+  };
+
+  const { data } = fetchMenusByPremises(premisesId);
   const { TextArea } = Input;
   return (
     <>
@@ -27,7 +31,7 @@ const ProductForm = ({
         wrapperCol={{ span: 14 }}
         layout="horizontal"
         onFinish={onFinish}
-        initialValues={{ ...defaultValues }}
+        initialValues={{ ...defaultValues, premises: defaultPremise }}
       >
         <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
           <Input />
@@ -66,13 +70,15 @@ const ProductForm = ({
             style={{ width: 200 }}
             options={premises?.map((premise) => ({ value: premise.id, label: premise.name }))}
             loading={isLoading}
+            onSelect={changePremises}
           />
         </Form.Item>
         <Form.Item label="Menu" name="Menu" rules={[{ required: true, message: 'Menu is required' }]}>
           <Select
             style={{ width: 200 }}
-            options={data?.map((menu) => ({ value: menu.id, label: menu.name }))}
+            options={data?.data.map((menu) => ({ value: menu.id, label: menu.name }))}
             loading={isLoading}
+            placeholder="Select Premises First"
           />
         </Form.Item>
         <Form.Item label="Estimated Creation Time" name="estimated_creation_time" rules={[{ required: true, message: 'Postcode is required' }]}>
@@ -103,12 +109,15 @@ ProductForm.propTypes = {
     menu: PropTypes.number,
     image: PropTypes.string,
   }),
+  fetchMenusByPremises: PropTypes.func.isRequired,
+  defaultPremise: PropTypes.number,
   premises: PropTypes.arrayOf(PropTypes.object).isRequired,
   onFormSubmit: PropTypes.func.isRequired,
   isLoading: PropTypes.bool,
 };
 
 ProductForm.defaultProps = {
+  defaultPremise: -1,
   defaultValues: {
     name: '',
     description: '',

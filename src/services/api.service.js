@@ -80,6 +80,9 @@ export const ProductService = {
   update(slug, params) {
     return ApiService.update('/product/products', slug, { params });
   },
+  delete(slug) {
+    return ApiService.delete(`/product/products/${slug}/`);
+  },
 };
 
 export const UserService = {

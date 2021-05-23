@@ -26,7 +26,7 @@ const Product = () => {
 
   const fetchMenusByPremises = (premisesID) => useQuery(
     ['menus', premisesID],
-    () => MenuService.query({ premises: premisesID }),
+    () => MenuService.query(premisesID),
     {
       // The query will not execute until the userId exists
       enabled: !!premisesID,
@@ -41,11 +41,11 @@ const Product = () => {
       message.error('Error');
     },
     onSettled: () => {
-      queryClient.invalidateQueries('products');
+      queryClient.invalidateQueries('productd');
     },
   });
 
-  const { data: products, isFetching } = useQuery(
+  const { data: products } = useQuery(
     ['product', premises],
     () => ProductService.query({ premises },
       { enabled: !!premises }),
@@ -142,7 +142,12 @@ const Product = () => {
         exact
         path={`${path}/create`}
         render={(props) => (
-          <CreateProduct {...props} premises={premisesOptions?.data} fetchMenusByPremises={fetchMenusByPremises} />
+          <CreateProduct
+            {...props}
+            defaultPremise={premises}
+            premises={premisesOptions?.data}
+            fetchMenusByPremises={fetchMenusByPremises}
+          />
         )}
       />
     </>
