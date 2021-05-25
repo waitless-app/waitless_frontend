@@ -5,7 +5,7 @@ const AuthService = {
   login(params) {
     return axios.post(`${API_URL}user/token/`, params);
   },
-  register(resource, params) {
+  register(params) {
     return axios.post(`${API_URL}user/create/`, params);
   },
   refresh(resource, params) {
