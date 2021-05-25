@@ -26,18 +26,24 @@ export const CreateProduct = ({ premises, defaultPremise, fetchMenusByPremises }
   const onFormSubmit = async (data) => {
     const { image: { file }, ...payload } = data;
     createProduct({ ...payload, image: await toBase64(file) });
-    console.log({ ...payload, image: await toBase64(file) });
     history.push('/dashboard/product');
   };
 
   return (
-    <ProductForm onFormSubmit={onFormSubmit} isLoading={isLoading} premises={premises} fetchMenusByPremises={fetchMenusByPremises}/>
+    <ProductForm
+      onFormSubmit={onFormSubmit}
+      isLoading={isLoading}
+      premises={premises}
+      defaultPremise={defaultPremise}
+      fetchMenusByPremises={fetchMenusByPremises}
+    />
   );
 };
 
 CreateProduct.propTypes = {
   premises: PropTypes.arrayOf(PropTypes.object).isRequired,
   defaultPremise: PropTypes.number,
+  fetchMenusByPremises: PropTypes.func.isRequired,
 };
 
 CreateProduct.defaultProps = {
