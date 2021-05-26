@@ -14,6 +14,7 @@ import * as PropTypes from 'prop-types';
 import Login from './app/Login';
 import Dashboard from './app/Dashboard';
 import { getItem } from './utils/localstorage';
+import Register from "./app/Register";
 
 function PrivateRoute({
   component: Component, direction, ...rest
@@ -49,6 +50,7 @@ function App() {
           </Route>
           <PrivateRoute path="/dashboard" component={Dashboard} />
           <Route path="/login" component={Login} />
+          <Route path="/register" component={Register} />
         </Switch>
       </Router>
       <ReactQueryDevtools initialIsOpen />

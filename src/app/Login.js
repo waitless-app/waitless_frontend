@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Row, Col, Form, Input, Button, Checkbox, message,
 } from 'antd';
-import { useHistory } from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
@@ -49,15 +49,15 @@ const Login = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }} name="remember" valuePropName="checked">
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
-              Submit
+              Login
             </Button>
           </Form.Item>
+          <div>
+            don&apos;t have an account ?
+            <Link strong onClick={() => history.push('/register')}> Create account</Link>
+          </div>
         </Form>
       </Col>
     </Row>
