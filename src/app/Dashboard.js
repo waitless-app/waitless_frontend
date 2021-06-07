@@ -14,7 +14,7 @@ import { removeItem } from '../utils/localstorage';
 import Premises from '../premises/Premises';
 import Menus from '../menu/Menus';
 import Product from '../product/Product';
-import Profile from "./Profile";
+import Profile from './Profile';
 
 const { Header, Content, Sider } = Layout;
 
@@ -34,7 +34,6 @@ const Dashboard = () => {
       </Menu.Item>
     </Menu>
   );
-  // @ts-ignore
   return (
     <>
       <Layout style={{ height: '100vh' }}>

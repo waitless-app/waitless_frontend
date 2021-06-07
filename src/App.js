@@ -14,7 +14,7 @@ import * as PropTypes from 'prop-types';
 import Login from './app/Login';
 import Dashboard from './app/Dashboard';
 import { getItem } from './utils/localstorage';
-import Register from "./app/Register";
+import Register from './app/Register';
 
 function PrivateRoute({
   component: Component, direction, ...rest

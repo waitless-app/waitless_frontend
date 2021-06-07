@@ -8,8 +8,7 @@ import AuthService from '../services/jwt.service';
 const Register = () => {
   const history = useHistory();
 
-  const onRegisterSuccess = (data) => {
-    console.log(data);
+  const onRegisterSuccess = () => {
     message.success('Your account have been created, you now log in.');
     setTimeout(() => { history.push('/login'); }, 2000);
   };
@@ -20,7 +19,6 @@ const Register = () => {
 
   const onFinish = (values) => {
     const { email, password, name } = values;
-    console.log(values);
     AuthService.register({ email, password, name })
       .then(({ data }) => onRegisterSuccess(data))
       .catch((error) => onRegisterFail(error));

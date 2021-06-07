@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  Row, Col, Form, Input, Button, Checkbox, message,
+  Row, Col, Form, Input, Button, message,
 } from 'antd';
-import {Link, useHistory} from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
