@@ -1,15 +1,78 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   Route, useHistory, useRouteMatch,
 } from 'react-router-dom';
 import {
-  Table, Space, Button, Row, Col, message, Popconfirm,
+  Table, Space, Button, Row, Col, message, Popconfirm, Tooltip,
 } from 'antd';
+import { QrcodeOutlined } from '@ant-design/icons';
+import Modal from 'antd/es/modal/Modal';
+import QRCode from 'qrcode.react';
+import PropTypes from 'prop-types';
 import { PremisesService } from '../services/api.service';
 import { UpdatePremises } from './UpdatePremises';
 import { CreatePremises } from './CreatePremises';
+
+const QRCodeModal = ({ record }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const download = (item) => {
+    const { name } = item;
+    const link = document.createElement('a');
+    link.download = `${name}-qr-code.png`;
+    link.href = document.getElementById('qr-code').toDataURL();
+    link.click();
+  };
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+  const styles = {
+    qrcode: {
+      textAlign: 'center',
+    },
+  };
+  return (
+    <>
+      <Tooltip title="Generate QR code">
+        <Button type="primary" shape="circle" onClick={showModal} icon={<QrcodeOutlined />} />
+      </Tooltip>
+      <Modal
+        title={`${record.name} QR Code`}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="back" onClick={() => download(record)}>
+            Download
+          </Button>,
+        ]}
+      >
+        <div style={styles.qrcode}>
+          <QRCode
+            id="qr-code"
+            level="Q"
+            size={256}
+            renderAs="canvas"
+            value={JSON.stringify({
+              type: 'premises',
+              id: record.id,
+            })}
+          />
+        </div>
+      </Modal>
+    </>
+  );
+};
 
 const Premises = () => {
   const history = useHistory();
@@ -29,13 +92,11 @@ const Premises = () => {
       queryClient.invalidateQueries('premises');
     },
   });
-
   const {
     isLoading, error, data,
   } = useQuery('premises', () => PremisesService.query(), {
     staleTime: 1000 * 60,
   });
-  if (isLoading) return (<>Loading...</>);
 
   const handlePremisesRemove = (premises) => {
     removePremisesMutation.mutate(premises.id);
@@ -79,9 +140,11 @@ const Premises = () => {
           >
             <Button danger>Remove</Button>
           </Popconfirm>
+          <QRCodeModal record={record} />
         </Space>
       ),
     }];
+  if (isLoading) return (<>Loading...</>);
   return (
     <>
       <Route exact path={path}>
@@ -108,5 +171,11 @@ const Premises = () => {
       />
     </>
   );
+};
+QRCodeModal.propTypes = {
+  record: PropTypes.shape({
+    id: PropTypes.number,
+    name: PropTypes.string,
+  }).isRequired,
 };
 export default Premises;
