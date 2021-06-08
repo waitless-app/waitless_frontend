@@ -53,7 +53,7 @@ function App() {
           <Route path="/register" component={Register} />
         </Switch>
       </Router>
-      <ReactQueryDevtools initialIsOpen />
+      { process.env.REACT_APP_QUERY_DEVTOOLS ? <ReactQueryDevtools initialIsOpen /> : null}
     </QueryClientProvider>
   );
 }

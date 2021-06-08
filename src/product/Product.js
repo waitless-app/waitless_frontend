@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
-  Button, Col, message, Popconfirm, Row, Select, Space, Table,
+  Button, Col, message, Popconfirm, Row, Select, Space, Table, Tooltip,
 } from 'antd';
 import { Route, useHistory, useRouteMatch } from 'react-router-dom';
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Avatar from 'antd/es/avatar/avatar';
 import { MenuService, PremisesService, ProductService } from '../services/api.service';
 import { CreateProduct } from './CreateProduct';
+import { UpdateProduct } from './UpdateProduct';
 
 const Product = () => {
   const [premises, setPremises] = useState();
@@ -41,18 +42,35 @@ const Product = () => {
       message.error('Error');
     },
     onSettled: () => {
-      queryClient.invalidateQueries('productd');
+      queryClient.invalidateQueries('products');
     },
   });
+  const {
+    mutate: activateProduct,
+    isLoading: isActivating,
+  } = useMutation((product) => ProductService.update(product.id, { is_active: !product.is_active }),
+    {
+      onSuccess: (res) => {
+        message.success(res?.data.isActive ? 'Product activated' : 'Product deactivated');
+        queryClient.invalidateQueries('products');
+      },
+      onError: () => {
+        message.error('Error, Please try again.');
+      },
+    });
 
   const { data: products } = useQuery(
-    ['product', premises],
+    ['products', premises],
     () => ProductService.query({ premises },
       { enabled: !!premises }),
   );
 
   const handleProductRemove = (product) => {
     removeProductMutation.mutate(product.id);
+  };
+
+  const handleProductActivate = (product) => {
+    activateProduct(product);
   };
 
   const columns = [
@@ -74,7 +92,15 @@ const Product = () => {
       dataIndex: 'is_active',
       key: 'isActive',
       render: (text, record) => (
-        record.is_active ? <CheckCircleOutlined /> : <CloseCircleOutlined />
+        <Tooltip title={record.is_active ? 'Deactivate Product' : 'Activate Product'}>
+          <Button
+            type="dashed"
+            shape="circle"
+            icon={record.is_active ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
+            loading={isActivating}
+            onClick={() => handleProductActivate(record)}
+          />
+        </Tooltip>
       ),
     },
     {
@@ -103,6 +129,7 @@ const Product = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
+          <Button type="primary" onClick={() => history.push(`${url}/edit/${record.id}`)}>Edit</Button>
           <Popconfirm
             title="Are you sure to delete this premises?"
             onConfirm={() => handleProductRemove(record)}
@@ -145,6 +172,17 @@ const Product = () => {
           <CreateProduct
             {...props}
             defaultPremise={premises}
+            premises={premisesOptions?.data}
+            fetchMenusByPremises={fetchMenusByPremises}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={`${path}/edit/:id`}
+        render={(props) => (
+          <UpdateProduct
+            {...props}
             premises={premisesOptions?.data}
             fetchMenusByPremises={fetchMenusByPremises}
           />
