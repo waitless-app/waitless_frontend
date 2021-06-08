@@ -73,7 +73,7 @@ const ProductForm = ({
             onSelect={changePremises}
           />
         </Form.Item>
-        <Form.Item label="Menu" name="Menu" rules={[{ required: true, message: 'Menu is required' }]}>
+        <Form.Item label="Menu" name="menu" rules={[{ required: true, message: 'Menu is required' }]}>
           <Select
             style={{ width: 200 }}
             options={data?.data.map((menu) => ({ value: menu.id, label: menu.name }))}

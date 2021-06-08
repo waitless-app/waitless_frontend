@@ -9,6 +9,7 @@ import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Avatar from 'antd/es/avatar/avatar';
 import { MenuService, PremisesService, ProductService } from '../services/api.service';
 import { CreateProduct } from './CreateProduct';
+import { UpdateProduct } from './UpdateProduct';
 
 const Product = () => {
   const [premises, setPremises] = useState();
@@ -41,12 +42,12 @@ const Product = () => {
       message.error('Error');
     },
     onSettled: () => {
-      queryClient.invalidateQueries('productd');
+      queryClient.invalidateQueries('products');
     },
   });
 
   const { data: products } = useQuery(
-    ['product', premises],
+    ['products', premises],
     () => ProductService.query({ premises },
       { enabled: !!premises }),
   );
@@ -103,6 +104,7 @@ const Product = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
+          <Button type="primary" onClick={() => history.push(`${url}/edit/${record.id}`)}>Edit</Button>
           <Popconfirm
             title="Are you sure to delete this premises?"
             onConfirm={() => handleProductRemove(record)}
@@ -145,6 +147,17 @@ const Product = () => {
           <CreateProduct
             {...props}
             defaultPremise={premises}
+            premises={premisesOptions?.data}
+            fetchMenusByPremises={fetchMenusByPremises}
+          />
+        )}
+      />
+      <Route
+        exact
+        path={`${path}/edit/:id`}
+        render={(props) => (
+          <UpdateProduct
+            {...props}
             premises={premisesOptions?.data}
             fetchMenusByPremises={fetchMenusByPremises}
           />

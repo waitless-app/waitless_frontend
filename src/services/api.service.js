@@ -63,7 +63,7 @@ export const MenuService = {
     return ApiService.post('product/menu/', params);
   },
   update(slug, params) {
-    return ApiService.update('product/menu', slug, { params });
+    return ApiService.update('product/menu', slug, params);
   },
 };
 
@@ -78,7 +78,7 @@ export const ProductService = {
     return ApiService.post('/product/products/', params);
   },
   update(slug, params) {
-    return ApiService.update('/product/products', slug, { params });
+    return ApiService.update('/product/products', slug, params);
   },
   delete(slug) {
     return ApiService.delete(`/product/products/${slug}/`);
