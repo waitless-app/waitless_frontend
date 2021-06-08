@@ -42,7 +42,7 @@ export const PremisesService = {
     return ApiService.get('premises/premises', `${slug}`);
   },
   update(slug, params) {
-    return ApiService.update('premises/premises', slug, { params });
+    return ApiService.update('premises/premises', slug, params);
   },
   post(params) {
     return ApiService.post('premises/premises/', params);
