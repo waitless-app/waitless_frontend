@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Layout, Menu, Breadcrumb, Row, Col, Avatar, Dropdown,
+  Layout, Menu, Breadcrumb, Row, Col, Avatar, Dropdown, Statistic, Button, Card,
 } from 'antd';
 import {
   ShopOutlined, TagsOutlined, MessageOutlined, UserOutlined,
@@ -18,6 +18,20 @@ import Profile from './Profile';
 
 const { Header, Content, Sider } = Layout;
 
+const Home = () => (
+  <Row gutter={16}>
+    <Col span={12}>
+      <Card>
+        <Statistic title="Active Orders" value="N/A" />
+      </Card>
+    </Col>
+    <Col span={12}>
+      <Card>
+        <Statistic title="Account Balance (USD)" value={0} precision={2} />
+      </Card>
+    </Col>
+  </Row>
+);
 // @ts-ignore
 const Dashboard = () => {
   const history = useHistory();
@@ -63,10 +77,6 @@ const Dashboard = () => {
             </Menu>
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-              <Breadcrumb.Item>Premises</Breadcrumb.Item>
-            </Breadcrumb>
             <Content
               className="site-layout-background"
               style={{
@@ -75,7 +85,7 @@ const Dashboard = () => {
                 minHeight: 280,
               }}
             >
-              <Route exact path={`${match.url}/`} render={() => <div>Home</div>} />
+              <Route exact path={`${match.url}/`} component={Home} />
               <Route path={`${match.url}/premises`} component={Premises} />
               <Route path={`${match.url}/menus`} component={Menus} />
               <Route path={`${match.url}/product`} component={Product} />

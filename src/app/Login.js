@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Row, Col, Form, Input, Button, message,
+  Row, Col, Form, Input, Button, message, Image, Space,
 } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';
@@ -27,6 +27,13 @@ const Login = () => {
   return (
     <Row align="middle" justify="center" style={{ height: '100vh' }}>
       <Col span={6}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Image
+            width={200}
+            src="/howlogo.png"
+            preview={false}
+          />
+        </div>
         <Form
           name="basic"
           initialValues={{ remember: true }}
@@ -49,15 +56,17 @@ const Login = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Login
-            </Button>
+          <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+              or
+              <Button htmlType="button" onClick={() => history.push('/register')}>
+                Sign Up
+              </Button>
+            </Space>
           </Form.Item>
-          <div>
-            don&apos;t have an account ?
-            <Link strong onClick={() => history.push('/register')}> Create account</Link>
-          </div>
         </Form>
       </Col>
     </Row>
