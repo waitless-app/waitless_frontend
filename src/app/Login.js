@@ -17,11 +17,12 @@ const Login = () => {
 
   const onFinish = (values) => {
     AuthService.login({ email: values.email, password: values.password })
-      .then(({ data }) => onLoginSuccess(data));
+      .then(({ data }) => onLoginSuccess(data))
+      .catch((error) => message.error(error.response.data.detail));
   };
 
-  const onFinishFailed = (errorInfo) => {
-    message.error(`Error, ${errorInfo}`);
+  const onFinishFailed = ({ errorFields }) => {
+    errorFields.forEach((error) => message.error(error.errors[0]));
   };
 
   return (
