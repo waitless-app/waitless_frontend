@@ -10,6 +10,7 @@ import Avatar from 'antd/es/avatar/avatar';
 import { MenuService, PremisesService, ProductService } from '../services/api.service';
 import { CreateProduct } from './CreateProduct';
 import { UpdateProduct } from './UpdateProduct';
+import {EmptyListWrapper} from "../core/EmptyListWrapper";
 
 const Product = () => {
   const [premises, setPremises] = useState();
@@ -21,7 +22,7 @@ const Product = () => {
     isFetching: isLoading, data: premisesOptions,
   } = useQuery('premises', () => PremisesService.query(), {
     onSuccess({ data: initialPremises }) {
-      setPremises(initialPremises[0].id);
+      if (initialPremises.length) setPremises(initialPremises[0].id);
     },
   });
 
@@ -146,6 +147,7 @@ const Product = () => {
   return (
     <>
       <Route exact path={path}>
+        <EmptyListWrapper list={premisesOptions?.data} emptyMessage="Please add premises first">
         <Row justify="space-between">
           <Col style={{ marginBottom: '1em' }}>
             <Select
@@ -156,7 +158,7 @@ const Product = () => {
               }))}
               onSelect={(value) => setPremises(value)}
               loading={isLoading}
-              defaultValue={premisesOptions?.data[0].id}
+              defaultValue={premisesOptions?.data[0]?.id}
             />
           </Col>
           <Col>
@@ -164,6 +166,7 @@ const Product = () => {
           </Col>
         </Row>
         <Table dataSource={products?.data} columns={columns} />
+        </EmptyListWrapper>
       </Route>
       <Route
         exact
