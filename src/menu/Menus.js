@@ -14,6 +14,7 @@ import { Route, useHistory, useRouteMatch } from 'react-router-dom';
 import { MenuService, PremisesService } from '../services/api.service';
 import { CreateMenu } from './CreateMenu';
 import { UpdateMenu } from './UpdateMenu';
+import { EmptyListWrapper } from '../core/EmptyListWrapper';
 
 const Menus = () => {
   // TODO find a way to use cached data if exist if not refetch it
@@ -24,7 +25,7 @@ const Menus = () => {
     isFetching: isLoading, data,
   } = useQuery('premises', () => PremisesService.query(), {
     onSuccess({ data: initialPremises }) {
-      setCount(initialPremises[0].id);
+      if (initialPremises.length) setCount(initialPremises[0].id);
     },
   });
   const { data: menus, isFetching } = useQuery(
@@ -98,17 +99,22 @@ const Menus = () => {
   return (
     <>
       <Route exact path={path}>
-        <Space>
-          <Button type="primary" onClick={() => history.push(`${url}/create`)}>Create New Menu</Button>
-          <Select
-            style={{ width: 200 }}
-            options={data?.data.map((premises) => ({ value: premises.id, label: premises.name }))}
-            onSelect={(value) => setCount(value)}
-            loading={isLoading}
-            defaultValue={data?.data[0].id}
-          />
-        </Space>
-        <MenusCards />
+        <EmptyListWrapper list={data?.data} emptyMessage="Please add premises first">
+          <Space>
+            <Button type="primary" onClick={() => history.push(`${url}/create`)}>Create New Menu</Button>
+            <Select
+              style={{ width: 200 }}
+              options={data?.data?.map((premises) => ({
+                value: premises.id,
+                label: premises.name,
+              }))}
+              onSelect={(value) => setCount(value)}
+              loading={isLoading}
+              defaultValue={data?.data[0]?.id}
+            />
+          </Space>
+          <MenusCards />
+        </EmptyListWrapper>
       </Route>
       <Route
         exact
