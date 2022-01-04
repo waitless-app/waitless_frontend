@@ -7,8 +7,8 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  async (config) => {
-    const token = await getItem('access_token');
+  (config) => {
+    const token = getItem('access_token');
     if (token) {
       // eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${token}`;
