@@ -57,7 +57,7 @@ const EditableCell = ({
   };
 
   let childNode = children;
-  const statuses = ['REQUESTED', 'ACCEPTED', 'DECLINED', 'STARTED', 'IN_PROGRESS', 'READY', 'COMPLETED'];
+  const statuses = ['ACCEPTED', 'DECLINED', 'STARTED', 'IN_PROGRESS', 'READY'];
   if (editable) {
     childNode = editing ? (
       <Form.Item
