@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getItem } from '../utils/localstorage';
+import { getItem, removeItem } from '../utils/localstorage';
 import { API_URL } from '../utils/constants';
 
 const instance = axios.create({
@@ -19,6 +19,20 @@ instance.interceptors.request.use(
     return config;
   },
   (err) => Promise.reject(err),
+);
+
+instance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response.status === 401) {
+      removeItem('access_token');
+      const loginURL = `${window.location.origin}/login`;
+      window.location.href = loginURL;
+    } else {
+      return Promise.reject(error);
+    }
+    return null;
+  },
 );
 
 export default instance;
