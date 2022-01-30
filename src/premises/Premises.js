@@ -7,11 +7,11 @@ import {
 import {
   Table, Space, Button, Row, Col, message, Popconfirm, Tooltip,
 } from 'antd';
-import { QrcodeOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, QrcodeOutlined } from '@ant-design/icons';
 import Modal from 'antd/es/modal/Modal';
 import QRCode from 'qrcode.react';
 import PropTypes from 'prop-types';
-import { PremisesService } from '../services/api.service';
+import { PremisesService, ProductService } from '../services/api.service';
 import { UpdatePremises } from './UpdatePremises';
 import { CreatePremises } from './CreatePremises';
 
@@ -102,6 +102,24 @@ const Premises = () => {
     removePremisesMutation.mutate(premises.id);
   };
 
+  const {
+    mutate: activatePremises,
+    isLoading: isActivating,
+  } = useMutation((premises) => PremisesService.update(premises.id, { active: !premises.active }),
+    {
+      onSuccess: (res) => {
+        message.success(res?.data.active ? `Premises ${res?.data.name} activated` : `Premises ${res?.data.name} deactivated`);
+        queryClient.invalidateQueries('premises');
+      },
+      onError: () => {
+        message.error('Error, Please try again.');
+      },
+    });
+
+  const handlePremisesActivate = (premises) => {
+    activatePremises(premises);
+  };
+
   if (error) {
     return (<div>{`An error has occurred: ${error.message}`}</div>);
   }
@@ -125,6 +143,22 @@ const Premises = () => {
       title: 'city',
       dataIndex: 'city',
       key: 'city',
+    },
+    {
+      title: 'Active',
+      dataIndex: 'is_active',
+      key: 'isActive',
+      render: (text, record) => (
+        <Tooltip title={record.active ? 'Deactivate Premises' : 'Activate Premises'}>
+          <Button
+            type="dashed"
+            shape="circle"
+            icon={record.active ? <CheckCircleOutlined /> : <CloseCircleOutlined />}
+            loading={isActivating}
+            onClick={() => handlePremisesActivate(record)}
+          />
+        </Tooltip>
+      ),
     },
     {
       title: 'Action',

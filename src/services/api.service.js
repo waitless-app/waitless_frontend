@@ -34,6 +34,15 @@ const ApiService = {
 
 export default ApiService;
 
+export const OrderService = {
+  query(params) {
+    return ApiService.query('order/', { params });
+  },
+  confirmPickupCode(params) {
+    return ApiService.post('order/confirm_pickup_code', params);
+  },
+};
+
 export const PremisesService = {
   query(params) {
     return ApiService.query('premises/premises/', { params });
