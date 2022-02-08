@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  Layout, Menu, Breadcrumb, Row, Col, Avatar, Dropdown,
+  Layout, Menu, Row, Col, Avatar, Dropdown, Statistic, Card,
 } from 'antd';
 import {
   ShopOutlined, TagsOutlined, MessageOutlined, UserOutlined,
-  HomeOutlined,
+  HomeOutlined, ContainerOutlined, AlertOutlined
 } from '@ant-design/icons';
 import {
   useHistory,
@@ -12,14 +12,30 @@ import {
 } from 'react-router-dom';
 import { removeItem } from '../utils/localstorage';
 import Premises from '../premises/Premises';
+import Menus from '../menu/Menus';
+import Product from '../product/Product';
+import Orders from "../orders/Orders";
 
 const { Header, Content, Sider } = Layout;
 
+const Home = () => (
+  <Row gutter={16}>
+    <Col span={12}>
+      <Card>
+        <Statistic title="Active Orders" value="N/A" />
+      </Card>
+    </Col>
+    <Col span={12}>
+      <Card>
+        <Statistic title="Account Balance (USD)" value={0} precision={2} />
+      </Card>
+    </Col>
+  </Row>
+);
 // @ts-ignore
-const Dashboard = ({ match }) => {
+const Dashboard = () => {
   const history = useHistory();
-  const { path } = useRouteMatch();
-  console.log(path);
+  const match = useRouteMatch();
 
   const logOut = () => {
     removeItem('access_token');
@@ -32,7 +48,6 @@ const Dashboard = ({ match }) => {
       </Menu.Item>
     </Menu>
   );
-  // @ts-ignore
   return (
     <>
       <Layout style={{ height: '100vh' }}>
@@ -54,17 +69,15 @@ const Dashboard = ({ match }) => {
               style={{ height: '100%', borderRight: 0 }}
             >
               <Menu.Item key="home" onClick={() => history.push(`${match.url}`)} icon={<HomeOutlined />}>Home</Menu.Item>
+              <Menu.Item key="orders" onClick={() => history.push(`${match.url}/orders`)} icon={<AlertOutlined />}>Orders</Menu.Item>
               <Menu.Item key="premises" onClick={() => history.push(`${match.url}/premises`)} icon={<ShopOutlined />}>Premises</Menu.Item>
-              <Menu.Item key="products" icon={<TagsOutlined />}>Products</Menu.Item>
-              <Menu.Item key="news" icon={<MessageOutlined />}>News</Menu.Item>
-              <Menu.Item key="profile" icon={<UserOutlined />}>Profile</Menu.Item>
+              <Menu.Item key="menus" onClick={() => history.push(`${match.url}/menus`)} icon={<ContainerOutlined />}>Menus</Menu.Item>
+              <Menu.Item key="products" onClick={() => history.push(`${match.url}/product`)} icon={<TagsOutlined />}>Products</Menu.Item>
+              <Menu.Item key="news" disabled icon={<MessageOutlined />}>News</Menu.Item>
+              <Menu.Item key="profile" onClick={() => history.push(`${match.url}/profile`)} icon={<UserOutlined />}>Profile</Menu.Item>
             </Menu>
           </Sider>
           <Layout style={{ padding: '0 24px 24px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>Dashboard</Breadcrumb.Item>
-              <Breadcrumb.Item>Premises</Breadcrumb.Item>
-            </Breadcrumb>
             <Content
               className="site-layout-background"
               style={{
@@ -73,8 +86,11 @@ const Dashboard = ({ match }) => {
                 minHeight: 280,
               }}
             >
-              <Route exact path={`${match.url}/`} render={() => <div>Home</div>} />
+              <Route exact path={`${match.url}/`} component={Home} />
               <Route path={`${match.url}/premises`} component={Premises} />
+              <Route path={`${match.url}/menus`} component={Menus} />
+              <Route path={`${match.url}/product`} component={Product} />
+              <Route path={`${match.url}/orders`} component={Orders} />
             </Content>
           </Layout>
         </Layout>

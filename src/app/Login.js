@@ -1,36 +1,40 @@
 import React from 'react';
 import {
-  Row, Col, Form, Input, Button, Checkbox,
+  Row, Col, Form, Input, Button, message, Image, Space,
 } from 'antd';
-import { History } from 'history';
+import { Link, useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
-interface LoginProps {
-  token?: string,
-  history: History,
-}
+const Login = () => {
+  const history = useHistory();
 
-const Login: React.FC<LoginProps> = ({ history }) => {
-  const onLoginSuccess = (data: { access: string, refresh: string}) => {
+  const onLoginSuccess = (data) => {
     setItem('access_token', data.access);
     setItem('refresh_token', data.refresh);
     history.push('/');
   };
 
-  const onFinish = (values: {email: string, password: string, remember: boolean}) => {
-    console.log(values);
+  const onFinish = (values) => {
     AuthService.login({ email: values.email, password: values.password })
-      .then(({ data }) => onLoginSuccess(data));
+      .then(({ data }) => onLoginSuccess(data))
+      .catch((error) => message.error(error.response.data.detail));
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed = ({ errorFields }) => {
+    errorFields.forEach((error) => message.error(error.errors[0]));
   };
 
   return (
     <Row align="middle" justify="center" style={{ height: '100vh' }}>
       <Col span={6}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Image
+            width={200}
+            src="/howlogo.png"
+            preview={false}
+          />
+        </div>
         <Form
           name="basic"
           initialValues={{ remember: true }}
@@ -53,14 +57,16 @@ const Login: React.FC<LoginProps> = ({ history }) => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }} name="remember" valuePropName="checked">
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
+          <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+              or
+              <Button htmlType="button" onClick={() => history.push('/register')}>
+                Sign Up
+              </Button>
+            </Space>
           </Form.Item>
         </Form>
       </Col>

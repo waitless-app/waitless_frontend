@@ -19,13 +19,12 @@ const ApiService = {
   },
 
   update(resource, slug, params) {
-    return instance.put(`${resource}/${slug}`, params);
+    return instance.patch(`${resource}/${slug}/`, params);
   },
 
   put(resource, params) {
     return instance.put(`${resource}`, params);
   },
-
   delete(resource) {
     return instance.delete(resource).catch((error) => {
       throw new Error(`[WL] ApiService ${error}`);
@@ -35,12 +34,30 @@ const ApiService = {
 
 export default ApiService;
 
+export const OrderService = {
+  query(params) {
+    return ApiService.query('order/', { params });
+  },
+  confirmPickupCode(params) {
+    return ApiService.post('order/confirm_pickup_code', params);
+  },
+};
+
 export const PremisesService = {
   query(params) {
     return ApiService.query('premises/premises/', { params });
   },
   get(slug) {
-    return ApiService.get('premises/premises/', `${slug}`);
+    return ApiService.get('premises/premises', `${slug}`);
+  },
+  update(slug, params) {
+    return ApiService.update('premises/premises', slug, params);
+  },
+  post(params) {
+    return ApiService.post('premises/premises/', params);
+  },
+  delete(slug) {
+    return ApiService.delete(`premises/premises/${slug}/`);
   },
 };
 
@@ -49,7 +66,31 @@ export const MenuService = {
     return ApiService.query(`premises/premises/${slug}/menu/`, { params });
   },
   get(slug) {
-    return ApiService.get('premises/premises', `${slug}/menu/`);
+    return ApiService.get('product/menu', `${slug}`);
+  },
+  post(params) {
+    return ApiService.post('product/menu/', params);
+  },
+  update(slug, params) {
+    return ApiService.update('product/menu', slug, params);
+  },
+};
+
+export const ProductService = {
+  query(params) {
+    return ApiService.query('/product/products', { params });
+  },
+  get(slug) {
+    return ApiService.get('/product/products', `${slug}`);
+  },
+  post(params) {
+    return ApiService.post('/product/products/', params);
+  },
+  update(slug, params) {
+    return ApiService.update('/product/products', slug, params);
+  },
+  delete(slug) {
+    return ApiService.delete(`/product/products/${slug}/`);
   },
 };
 
