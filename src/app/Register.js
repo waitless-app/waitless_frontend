@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Row, Col, Form, Input, Button, Checkbox, message, Space,
+  Row, Col, Form, Input, Button, message, Space,
 } from 'antd';
 import { Link, useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';

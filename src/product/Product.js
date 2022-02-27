@@ -10,7 +10,7 @@ import Avatar from 'antd/es/avatar/avatar';
 import { MenuService, PremisesService, ProductService } from '../services/api.service';
 import { CreateProduct } from './CreateProduct';
 import { UpdateProduct } from './UpdateProduct';
-import {EmptyListWrapper} from "../core/EmptyListWrapper";
+import { EmptyListWrapper } from '../core/EmptyListWrapper';
 
 const Product = () => {
   const [premises, setPremises] = useState();
@@ -148,24 +148,24 @@ const Product = () => {
     <>
       <Route exact path={path}>
         <EmptyListWrapper list={premisesOptions?.data} emptyMessage="Please add premises first">
-        <Row justify="space-between">
-          <Col style={{ marginBottom: '1em' }}>
-            <Select
-              style={{ width: 200 }}
-              options={premisesOptions?.data.map((option) => ({
-                value: option.id,
-                label: option.name,
-              }))}
-              onSelect={(value) => setPremises(value)}
-              loading={isLoading}
-              defaultValue={premisesOptions?.data[0]?.id}
-            />
-          </Col>
-          <Col>
-            <Button type="primary" onClick={() => history.push(`${url}/create`)}>Create New Product</Button>
-          </Col>
-        </Row>
-        <Table dataSource={products?.data} columns={columns} />
+          <Row justify="space-between">
+            <Col style={{ marginBottom: '1em' }}>
+              <Select
+                style={{ width: 200 }}
+                options={premisesOptions?.data.map((option) => ({
+                  value: option.id,
+                  label: option.name,
+                }))}
+                onSelect={(value) => setPremises(value)}
+                loading={isLoading}
+                defaultValue={premisesOptions?.data[0]?.id}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" onClick={() => history.push(`${url}/create`)}>Create New Product</Button>
+            </Col>
+          </Row>
+          <Table dataSource={products?.data} columns={columns} />
         </EmptyListWrapper>
       </Route>
       <Route

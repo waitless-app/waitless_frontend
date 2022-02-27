@@ -5,4 +5,5 @@ export const toBase64 = (file) => new Promise((resolve, reject) => {
   reader.onerror = (error) => reject(error);
 });
 
+// eslint-disable-next-line max-len
 export const mergeArrayWithObject = (arr, obj) => arr && arr.map((t) => (t.id === obj.id ? obj : t));
