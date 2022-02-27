@@ -4,7 +4,7 @@ import {
 } from 'antd';
 import {
   ShopOutlined, TagsOutlined, MessageOutlined, UserOutlined,
-  HomeOutlined, ContainerOutlined, AlertOutlined
+  HomeOutlined, ContainerOutlined, AlertOutlined,
 } from '@ant-design/icons';
 import {
   useHistory,
@@ -14,7 +14,7 @@ import { removeItem } from '../utils/localstorage';
 import Premises from '../premises/Premises';
 import Menus from '../menu/Menus';
 import Product from '../product/Product';
-import Orders from "../orders/Orders";
+import Orders from '../orders/Orders';
 
 const { Header, Content, Sider } = Layout;
 

@@ -2,8 +2,8 @@ import {
   Button, Form, Input, Modal,
 } from 'antd';
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-// eslint-disable-next-line react/prop-types
 const OrderComplete = ({
   onCodeSubmit, order, onOrderComplete, setConfirmationOrder,
 }) => {
@@ -35,7 +35,11 @@ const OrderComplete = ({
       layout="horizontal"
       onFinish={onFormSubmit}
     >
-      <Form.Item label="Pickup Code" name="pickup_code" rules={[{ required: true, message: 'Pickup Code is required' }]}>
+      <Form.Item
+        label="Pickup Code"
+        name="pickup_code"
+        rules={[{ required: true, message: 'Pickup Code is required' }]}
+      >
         <Input />
       </Form.Item>
       <Form.Item wrapperCol={{ span: 8, offset: 4 }}>
@@ -66,11 +70,36 @@ const OrderComplete = ({
     <>
       <Button type="primary" onClick={() => showModal()}>Complete Order</Button>
 
-      <Modal title={order ? 'Confirm Order Data' : 'Enter Pickup Code'} visible={modalVisible} footer={null} onCancel={handleCancel}>
+      <Modal
+        title={order ? 'Confirm Order Data' : 'Enter Pickup Code'}
+        visible={modalVisible}
+        footer={null}
+        onCancel={handleCancel}
+      >
         { order ? <StepTwo /> : <StepOne />}
       </Modal>
     </>
   );
+};
+
+OrderComplete.propTypes = {
+  onCodeSubmit: PropTypes.func,
+  order: PropTypes.shape({
+    id: PropTypes.number,
+    customer: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+    order_products: PropTypes.arrayOf(PropTypes.object),
+  }),
+  onOrderComplete: PropTypes.func,
+  setConfirmationOrder: PropTypes.func,
+};
+
+OrderComplete.defaultProps = {
+  onCodeSubmit: () => {},
+  order: {},
+  onOrderComplete: () => {},
+  setConfirmationOrder: () => {},
 };
 
 export default OrderComplete;

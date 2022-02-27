@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading  */
-/* eslint-disable react/prop-types  */
 import React, {
   useContext, useEffect, useRef, useState,
 } from 'react';
@@ -7,6 +5,7 @@ import {
   Table, Form, Select,
 } from 'antd';
 import { Option } from 'antd/es/mentions';
+import PropTypes from 'prop-types';
 
 const EditableContext = React.createContext(null);
 
@@ -19,6 +18,10 @@ const EditableRow = ({ index, ...props }) => {
       </EditableContext.Provider>
     </Form>
   );
+};
+
+EditableRow.propTypes = {
+  index: PropTypes.number.isRequired,
 };
 
 const EditableCell = ({
@@ -52,7 +55,7 @@ const EditableCell = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log('Save failed:', errInfo);
+      console.info('Save failed:', errInfo);
     }
   };
 
@@ -85,6 +88,8 @@ const EditableCell = ({
         }}
         onClick={toggleEdit}
         onKeyUp={toggleEdit}
+        role="button"
+        tabIndex={0}
       >
         {children}
       </div>
@@ -92,6 +97,24 @@ const EditableCell = ({
   }
 
   return <td {...restProps}>{childNode}</td>;
+};
+
+EditableCell.propTypes = {
+  title: PropTypes.string,
+  editable: PropTypes.bool,
+  children: PropTypes.shape({}),
+  dataIndex: PropTypes.number,
+  record: PropTypes.shape({}),
+  handleSave: PropTypes.func,
+};
+
+EditableCell.defaultProps = {
+  title: '',
+  editable: false,
+  children: {},
+  dataIndex: 0,
+  record: {},
+  handleSave: () => {},
 };
 
 const OrdersList = ({ orders, handleStatusChange }) => {
@@ -151,5 +174,15 @@ const OrdersList = ({ orders, handleStatusChange }) => {
       <Table columns={columns1} components={components} dataSource={orders} />
     </>
   );
+};
+
+OrdersList.propTypes = {
+  orders: PropTypes.arrayOf(PropTypes.object),
+  handleStatusChange: PropTypes.func,
+};
+
+OrdersList.defaultProps = {
+  orders: [],
+  handleStatusChange: () => {},
 };
 export default OrdersList;

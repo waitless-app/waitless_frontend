@@ -11,7 +11,7 @@ import { CheckCircleOutlined, CloseCircleOutlined, QrcodeOutlined } from '@ant-d
 import Modal from 'antd/es/modal/Modal';
 import QRCode from 'qrcode.react';
 import PropTypes from 'prop-types';
-import { PremisesService, ProductService } from '../services/api.service';
+import { PremisesService } from '../services/api.service';
 import { UpdatePremises } from './UpdatePremises';
 import { CreatePremises } from './CreatePremises';
 
@@ -81,17 +81,18 @@ const Premises = () => {
   const handleRedirect = (route) => {
     history.push(route);
   };
-  const removePremisesMutation = useMutation((premisesID) => PremisesService.delete(premisesID), {
-    onSuccess: () => {
-      message.success('Premises removed');
-    },
-    onError: () => {
-      message.error('Error');
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries('premises');
-    },
-  });
+  const removePremisesMutation = useMutation((premisesID) => PremisesService.delete(premisesID),
+    {
+      onSuccess: () => {
+        message.success('Premises removed');
+      },
+      onError: () => {
+        message.error('Error');
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries('premises');
+      },
+    });
   const {
     isLoading, error, data,
   } = useQuery('premises', () => PremisesService.query(), {
@@ -105,16 +106,19 @@ const Premises = () => {
   const {
     mutate: activatePremises,
     isLoading: isActivating,
-  } = useMutation((premises) => PremisesService.update(premises.id, { active: !premises.active }),
-    {
-      onSuccess: (res) => {
-        message.success(res?.data.active ? `Premises ${res?.data.name} activated` : `Premises ${res?.data.name} deactivated`);
-        queryClient.invalidateQueries('premises');
-      },
-      onError: () => {
-        message.error('Error, Please try again.');
-      },
-    });
+  } = useMutation((premises) => PremisesService.update(
+    premises.id, { active: !premises.active },
+  ),
+  {
+    onSuccess: (res) => {
+      message.success(res?.data.active ? `Premises ${res?.data.name} activated`
+        : `Premises ${res?.data.name} deactivated`);
+      queryClient.invalidateQueries('premises');
+    },
+    onError: () => {
+      message.error('Error, Please try again.');
+    },
+  });
 
   const handlePremisesActivate = (premises) => {
     activatePremises(premises);

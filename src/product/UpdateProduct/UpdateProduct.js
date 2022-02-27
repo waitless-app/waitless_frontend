@@ -2,8 +2,9 @@ import { message, Spin } from 'antd';
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import PropTypes from 'prop-types';
 import ProductForm from '../ProductForm';
-import { PremisesService, ProductService } from '../../services/api.service';
+import { ProductService } from '../../services/api.service';
 import { toBase64 } from '../../utils/utils';
 
 export const UpdateProduct = ({ fetchMenusByPremises, premises }) => {
@@ -50,6 +51,16 @@ export const UpdateProduct = ({ fetchMenusByPremises, premises }) => {
       fetchMenusByPremises={fetchMenusByPremises}
     />
   );
+};
+
+UpdateProduct.propTypes = {
+  fetchMenusByPremises: PropTypes.func,
+  premises: PropTypes.arrayOf(PropTypes.object),
+};
+
+UpdateProduct.defaultProps = {
+  fetchMenusByPremises: () => {},
+  premises: [],
 };
 
 export default UpdateProduct;

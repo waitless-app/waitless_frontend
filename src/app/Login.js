@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Row, Col, Form, Input, Button, message, Image, Space,
 } from 'antd';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import AuthService from '../services/jwt.service';
 import { setItem } from '../utils/localstorage';
 
