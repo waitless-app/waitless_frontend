@@ -30,7 +30,7 @@ const OrderComplete = ({
   const StepOne = () => (
     <Form
       form={form}
-      labelCol={{ span: 4 }}
+      labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
       layout="horizontal"
       onFinish={onFormSubmit}
@@ -42,7 +42,7 @@ const OrderComplete = ({
       >
         <Input />
       </Form.Item>
-      <Form.Item wrapperCol={{ span: 8, offset: 4 }}>
+      <Form.Item wrapperCol={{ span: 6, offset: 6 }}>
         <Button type="primary" htmlType="submit">
           Check
         </Button>
@@ -90,14 +90,13 @@ OrderComplete.propTypes = {
       name: PropTypes.string,
     }),
     order_products: PropTypes.arrayOf(PropTypes.object),
-  }),
+  }).isRequired,
   onOrderComplete: PropTypes.func,
   setConfirmationOrder: PropTypes.func,
 };
 
 OrderComplete.defaultProps = {
   onCodeSubmit: () => {},
-  order: {},
   onOrderComplete: () => {},
   setConfirmationOrder: () => {},
 };

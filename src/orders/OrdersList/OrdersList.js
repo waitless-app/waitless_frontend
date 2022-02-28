@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Collapse,
   Table,
@@ -10,8 +10,13 @@ import { EditableCell, EditableRow } from './OrderListEditableRow';
 const { Panel } = Collapse;
 
 const OrdersList = ({ orders, handleStatusChange }) => {
-  const completedOrders = orders.filter(({ status }) => status === 'COMPLETED');
-  const activeOrders = orders.filter(({ status }) => status !== 'COMPLETED');
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [activeOrders, setActiveOrders] = useState([]);
+
+  useEffect(() => {
+    setCompletedOrders(orders.filter(({ status }) => status === 'COMPLETED'));
+    setActiveOrders(orders.filter(({ status }) => status !== 'COMPLETED'));
+  }, []);
 
   const columns = [
     {
