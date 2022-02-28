@@ -6,13 +6,17 @@ import {
   Route, useRouteMatch,
 } from 'react-router-dom';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { Col, message, Row } from 'antd';
+import {
+  Col, message, Row, Typography,
+} from 'antd';
 import { OrderService } from '../services/api.service';
 import OrdersList from './OrdersList/OrdersList';
 import { WS_URL } from '../utils/constants';
 import { getItem } from '../utils/localstorage';
 import { mergeArrayWithObject } from '../utils/utils';
 import OrderComplete from './OrderComplete/OrderComplete';
+
+const { Text } = Typography;
 
 const Orders = () => {
   const { path } = useRouteMatch();
@@ -137,10 +141,10 @@ const Orders = () => {
           handleStatusChange={handleStatusChange}
         />
         <div>
-          <span>
-            The WebSocket is currently
+          <Text disabled>
+            Connection is currently&nbsp;
             {connectionStatus}
-          </span>
+          </Text>
         </div>
       </Route>
     </>

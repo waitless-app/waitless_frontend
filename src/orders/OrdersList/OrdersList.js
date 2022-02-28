@@ -1,149 +1,50 @@
-import React, {
-  useContext, useEffect, useRef, useState,
-} from 'react';
+import React from 'react';
 import {
-  Table, Form, Select,
+  Collapse,
+  Table,
 } from 'antd';
-import { Option } from 'antd/es/mentions';
 import PropTypes from 'prop-types';
+import { parseDate } from '../../utils/utils';
+import { EditableCell, EditableRow } from './OrderListEditableRow';
 
-const EditableContext = React.createContext(null);
-
-const EditableRow = ({ index, ...props }) => {
-  const [form] = Form.useForm();
-  return (
-    <Form form={form} component={false}>
-      <EditableContext.Provider value={form}>
-        <tr {...props} />
-      </EditableContext.Provider>
-    </Form>
-  );
-};
-
-EditableRow.propTypes = {
-  index: PropTypes.number.isRequired,
-};
-
-const EditableCell = ({
-  title,
-  editable,
-  children,
-  dataIndex,
-  record,
-  handleSave,
-  ...restProps
-}) => {
-  const [editing, setEditing] = useState(false);
-  const inputRef = useRef(null);
-  const form = useContext(EditableContext);
-  useEffect(() => {
-    if (editing) {
-      inputRef.current.focus();
-    }
-  }, [editing]);
-
-  const toggleEdit = () => {
-    setEditing(!editing);
-    form.setFieldsValue({
-      [dataIndex]: record[dataIndex],
-    });
-  };
-
-  const save = async () => {
-    try {
-      const values = await form.validateFields();
-      toggleEdit();
-      handleSave({ ...record, ...values });
-    } catch (errInfo) {
-      console.info('Save failed:', errInfo);
-    }
-  };
-
-  let childNode = children;
-  const statuses = ['ACCEPTED', 'DECLINED', 'STARTED', 'IN_PROGRESS', 'READY'];
-  if (editable) {
-    childNode = editing ? (
-      <Form.Item
-        style={{
-          margin: 0,
-        }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-      >
-        <Select ref={inputRef} style={{ width: 120 }} onChange={save}>
-          {statuses.map((status) => <Option key={status} value={status}>{status}</Option>)}
-        </Select>
-
-      </Form.Item>
-    ) : (
-      <div
-        className="editable-cell-value-wrap"
-        style={{
-          paddingRight: 24,
-        }}
-        onClick={toggleEdit}
-        onKeyUp={toggleEdit}
-        role="button"
-        tabIndex={0}
-      >
-        {children}
-      </div>
-    );
-  }
-
-  return <td {...restProps}>{childNode}</td>;
-};
-
-EditableCell.propTypes = {
-  title: PropTypes.string,
-  editable: PropTypes.bool,
-  children: PropTypes.shape({}),
-  dataIndex: PropTypes.number,
-  record: PropTypes.shape({}),
-  handleSave: PropTypes.func,
-};
-
-EditableCell.defaultProps = {
-  title: '',
-  editable: false,
-  children: {},
-  dataIndex: 0,
-  record: {},
-  handleSave: () => {},
-};
+const { Panel } = Collapse;
 
 const OrdersList = ({ orders, handleStatusChange }) => {
+  const completedOrders = orders.filter(({ status }) => status === 'COMPLETED');
+  const activeOrders = orders.filter(({ status }) => status !== 'COMPLETED');
+
   const columns = [
     {
-      title: 'id',
+      title: 'ID',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'status',
+      title: 'Status',
       dataIndex: 'status',
       key: 'status',
       editable: true,
     },
     {
-      title: 'customer',
+      title: 'Customer',
       dataIndex: ['customer', 'name'],
       key: 'customer',
     },
     {
-      title: 'created',
+      title: 'Created At',
       dataIndex: 'created',
       key: 'created',
+      render: (text, record) => (
+        <div>{ parseDate(record.created)}</div>
+      ),
     },
     {
-      title: 'updated',
+      title: 'Last Update',
       dataIndex: 'updated',
       key: 'updated',
+      render: (text, record) => (
+        <div>{ parseDate(record.updated)}</div>
+      ),
     }];
 
   const components = {
@@ -171,7 +72,14 @@ const OrdersList = ({ orders, handleStatusChange }) => {
 
   return (
     <>
-      <Table columns={columns1} components={components} dataSource={orders} />
+      <Collapse defaultActiveKey={['1']} ghost>
+        <Panel header="Active Orders" key="1">
+          <Table columns={columns1} components={components} dataSource={activeOrders} />
+        </Panel>
+        <Panel header="Completed Orders" key="2">
+          <Table columns={columns} dataSource={completedOrders} />
+        </Panel>
+      </Collapse>
     </>
   );
 };
