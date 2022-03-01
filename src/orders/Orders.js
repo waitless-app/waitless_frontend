@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading  */
 /* eslint-disable react/prop-types  */
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import {
   Route, useRouteMatch,
 } from 'react-router-dom';
@@ -21,17 +21,17 @@ const { Text } = Typography;
 const Orders = () => {
   const { path } = useRouteMatch();
 
-  const [orders, setOrders] = useState([]);
   const [confirmationOrder, setConfirmationOrder] = useState();
 
   const {
-    isLoading, error,
+    isLoading, error, data: orders,
   } = useQuery('orders', () => OrderService.query(), {
+    select: (data) => data.data,
+    placeholderData: [],
     staleTime: 1000 * 60,
-    onSuccess: (data) => {
-      setOrders(data.data);
-    },
   });
+
+  const queryClient = useQueryClient();
 
   const token = getItem('access_token');
   const [socketUrl] = useState(`${WS_URL}/?token=${token}`);
@@ -50,7 +50,8 @@ const Orders = () => {
     if (lastMessage) {
       const msg = JSON.parse(lastMessage.data);
       if (msg.type === 'update_order') {
-        setOrders(mergeArrayWithObject(orders, msg.data));
+        const mergedOrders = mergeArrayWithObject(orders, msg.data);
+        queryClient.setQueryData('orders', { data: mergedOrders });
       }
     }
   }, [lastMessage]);

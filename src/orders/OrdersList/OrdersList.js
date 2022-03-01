@@ -44,7 +44,7 @@ const OrdersList = ({ orders, handleStatusChange }) => {
   useEffect(() => {
     setCompletedOrders(orders.filter(({ status }) => status === 'COMPLETED'));
     setActiveOrders(orders.filter(({ status }) => status !== 'COMPLETED'));
-  }, []);
+  }, [orders]);
 
   const columns = [
     {
@@ -80,6 +80,10 @@ const OrdersList = ({ orders, handleStatusChange }) => {
         <div>{ parseDate(record.updated)}</div>
       ),
       sorter: (a, b) => new Date(a.updated).getTime() - new Date(b.updated).getTime(),
+    }, {
+      title: 'Total Cost',
+      dataIndex: 'total_cost',
+      key: 'total_cost',
     }];
 
   const components = {
@@ -126,12 +130,11 @@ const OrdersList = ({ orders, handleStatusChange }) => {
 };
 
 OrdersList.propTypes = {
-  orders: PropTypes.arrayOf(PropTypes.object),
+  orders: PropTypes.arrayOf(PropTypes.object).isRequired,
   handleStatusChange: PropTypes.func,
 };
 
 OrdersList.defaultProps = {
-  orders: [],
   handleStatusChange: () => {},
 };
 export default OrdersList;
