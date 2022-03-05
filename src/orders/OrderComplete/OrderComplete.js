@@ -1,8 +1,10 @@
 import {
-  Button, Form, Input, Modal,
+  Button, Form, Input, Modal, Typography,
 } from 'antd';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+
+const { Title, Text } = Typography;
 
 const OrderComplete = ({
   onCodeSubmit, order, onOrderComplete, setConfirmationOrder,
@@ -25,12 +27,14 @@ const OrderComplete = ({
   const handleOrderCompletion = () => {
     onOrderComplete();
     setModalVisible(false);
+    setConfirmationOrder(null);
+    form.resetFields();
   };
 
   const StepOne = () => (
     <Form
       form={form}
-      labelCol={{ span: 4 }}
+      labelCol={{ span: 6 }}
       wrapperCol={{ span: 14 }}
       layout="horizontal"
       onFinish={onFormSubmit}
@@ -42,7 +46,7 @@ const OrderComplete = ({
       >
         <Input />
       </Form.Item>
-      <Form.Item wrapperCol={{ span: 8, offset: 4 }}>
+      <Form.Item wrapperCol={{ span: 6, offset: 6 }}>
         <Button type="primary" htmlType="submit">
           Check
         </Button>
@@ -52,14 +56,30 @@ const OrderComplete = ({
 
   const StepTwo = () => (
     <>
-      <div>{ order.id }</div>
-      <div>{ order.customer.name }</div>
-      <div>Order Products</div>
-      { order.order_products.map((orderProduct) => (
-        <div>
-          { orderProduct.product.name }
-        </div>
-      ))}
+      <Title level={4}>Order Details</Title>
+
+      <div>
+        <Text strong>ID: </Text>
+        { order.id }
+      </div>
+      <div>
+        <Text strong>Customer Name: </Text>
+        { order.customer.name }
+      </div>
+      <div><Text strong>Order Products: </Text></div>
+      <ul>
+        { order.order_products.map((orderProduct) => (
+          <li>
+            { orderProduct.product.name }
+            &nbsp;
+            <Text code>
+              x
+              {orderProduct.quantity}
+            </Text>
+          </li>
+        ))}
+      </ul>
+
       <Button type="primary" htmlType="submit" onClick={handleOrderCompletion}>
         Complete Order
       </Button>
@@ -90,14 +110,13 @@ OrderComplete.propTypes = {
       name: PropTypes.string,
     }),
     order_products: PropTypes.arrayOf(PropTypes.object),
-  }),
+  }).isRequired,
   onOrderComplete: PropTypes.func,
   setConfirmationOrder: PropTypes.func,
 };
 
 OrderComplete.defaultProps = {
   onCodeSubmit: () => {},
-  order: {},
   onOrderComplete: () => {},
   setConfirmationOrder: () => {},
 };

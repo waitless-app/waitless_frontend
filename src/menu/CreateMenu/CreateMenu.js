@@ -1,13 +1,14 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
-import { QueryClient, useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import MenuForm from '../MenuForm';
 import { MenuService } from '../../services/api.service';
 
 export const CreateMenu = ({ premises, defaultPremise }) => {
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
+
   const history = useHistory();
   const {
     mutate: createMenu,
@@ -15,7 +16,7 @@ export const CreateMenu = ({ premises, defaultPremise }) => {
   } = useMutation((menu) => MenuService.post(menu), {
     onSuccess: ({ data }) => {
       message.success('Menu created');
-      queryClient.invalidateQueries(['menus', data.id]);
+      queryClient.invalidateQueries(['menus', data.premises]);
       history.push('/dashboard/menus');
     },
     onError: () => {

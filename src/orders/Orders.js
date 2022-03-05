@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading  */
 /* eslint-disable react/prop-types  */
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import {
   Route, useRouteMatch,
 } from 'react-router-dom';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
-import { Col, message, Row } from 'antd';
+import {
+  Col, message, Row, Typography,
+} from 'antd';
 import { OrderService } from '../services/api.service';
 import OrdersList from './OrdersList/OrdersList';
 import { WS_URL } from '../utils/constants';
@@ -14,20 +16,22 @@ import { getItem } from '../utils/localstorage';
 import { mergeArrayWithObject } from '../utils/utils';
 import OrderComplete from './OrderComplete/OrderComplete';
 
+const { Text } = Typography;
+
 const Orders = () => {
   const { path } = useRouteMatch();
 
-  const [orders, setOrders] = useState([]);
   const [confirmationOrder, setConfirmationOrder] = useState();
 
   const {
-    isLoading, error,
+    isLoading, error, data: orders,
   } = useQuery('orders', () => OrderService.query(), {
+    select: (data) => data.data,
+    placeholderData: [],
     staleTime: 1000 * 60,
-    onSuccess: (data) => {
-      setOrders(data.data);
-    },
   });
+
+  const queryClient = useQueryClient();
 
   const token = getItem('access_token');
   const [socketUrl] = useState(`${WS_URL}/?token=${token}`);
@@ -42,12 +46,26 @@ const Orders = () => {
     reconnectInterval: 3000,
   });
 
+  const handleIncomingMessage = ({ type: messageType, data: order }) => {
+    if (messageType === 'update_order') {
+      const mergedOrders = mergeArrayWithObject(orders, order);
+      queryClient.setQueryData('orders', { data: mergedOrders });
+      message.info('Order Status Updated');
+    }
+
+    if (messageType === 'order.notification') {
+      const orderNotExist = !orders.some(({ id }) => id === order.id);
+      if (orderNotExist) {
+        queryClient.setQueryData('orders', { data: [order, ...orders] });
+        message.info('You have new Order!');
+      }
+    }
+  };
+
   useEffect(() => {
     if (lastMessage) {
       const msg = JSON.parse(lastMessage.data);
-      if (msg.type === 'update_order') {
-        setOrders(mergeArrayWithObject(orders, msg.data));
-      }
+      handleIncomingMessage(msg);
     }
   }, [lastMessage]);
 
@@ -90,7 +108,6 @@ const Orders = () => {
   };
 
   const handleStatusChange = (row) => {
-    console.log(row);
     if (row.status === 'ACCEPTED') {
       acceptOrder(row);
     } else if (row.status === 'READY') {
@@ -137,10 +154,10 @@ const Orders = () => {
           handleStatusChange={handleStatusChange}
         />
         <div>
-          <span>
-            The WebSocket is currently
+          <Text disabled>
+            Connection is currently&nbsp;
             {connectionStatus}
-          </span>
+          </Text>
         </div>
       </Route>
     </>

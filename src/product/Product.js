@@ -30,7 +30,6 @@ const Product = () => {
     ['menus', premisesID],
     () => MenuService.query(premisesID),
     {
-      // The query will not execute until the userId exists
       enabled: !!premisesID,
     },
   );

@@ -3580,10 +3580,10 @@
   "resolved" "https://registry.npmjs.org/date-fns/-/date-fns-2.21.0.tgz"
   "version" "2.21.0"
 
-"dayjs@^1.8.30":
-  "integrity" "sha512-RI/Hh4kqRc1UKLOAf/T5zdMMX5DQIlDxwUe3wSyMMnEbGunnpENCdbUgM+dW7kXidZqCttBrmw7BhN4TMddkCw=="
-  "resolved" "https://registry.npmjs.org/dayjs/-/dayjs-1.10.4.tgz"
-  "version" "1.10.4"
+"dayjs@^1.10.8", "dayjs@^1.8.30":
+  "integrity" "sha512-wbNwDfBHHur9UOzNUjeKUOJ0fCb0a52Wx0xInmQ7Y8FstyajiV1NmK1e00cxsr9YrE9r7yAChE0VvpuY5Rnlow=="
+  "resolved" "https://registry.npmjs.org/dayjs/-/dayjs-1.10.8.tgz"
+  "version" "1.10.8"
 
 "debug@^2.6.0":
   "integrity" "sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA=="

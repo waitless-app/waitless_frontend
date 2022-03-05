@@ -59,6 +59,9 @@ export const PremisesService = {
   delete(slug) {
     return ApiService.delete(`premises/premises/${slug}/`);
   },
+  getStatistic(slug) {
+    return ApiService.query(`premises/premises/${slug}/statistic`);
+  },
 };
 
 export const MenuService = {
@@ -73,6 +76,9 @@ export const MenuService = {
   },
   update(slug, params) {
     return ApiService.update('product/menu', slug, params);
+  },
+  setDefault(slug) {
+    return ApiService.post(`product/menu/${slug}/make_default/`);
   },
 };
 

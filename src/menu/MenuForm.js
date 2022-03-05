@@ -27,6 +27,9 @@ const MenuForm = ({
         <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
           <Input />
         </Form.Item>
+        <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Description is required' }]}>
+          <Input />
+        </Form.Item>
         <Form.Item label="Premises" name="premises" rules={[{ required: true, message: 'City is required' }]}>
           <Select
             style={{ width: 200 }}
@@ -36,7 +39,7 @@ const MenuForm = ({
         </Form.Item>
         <Form.Item wrapperCol={{ span: 8, offset: 4 }}>
           <Button type="primary" htmlType="submit" loading={isLoading}>
-            Submit
+            Save
           </Button>
         </Form.Item>
 
@@ -48,6 +51,7 @@ const MenuForm = ({
 MenuForm.propTypes = {
   defaultValues: PropTypes.shape({
     name: PropTypes.string,
+    description: PropTypes.string,
     premises: PropTypes.number,
   }),
   onFormSubmit: PropTypes.func.isRequired,
@@ -58,7 +62,8 @@ MenuForm.propTypes = {
 MenuForm.defaultProps = {
   defaultValues: {
     name: '',
-    number: -1,
+    description: '',
+    premises: '',
   },
   isLoading: false,
 };
