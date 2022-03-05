@@ -1,8 +1,10 @@
 import {
-  Button, Form, Input, Modal,
+  Button, Form, Input, Modal, Typography,
 } from 'antd';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+
+const { Title, Text } = Typography;
 
 const OrderComplete = ({
   onCodeSubmit, order, onOrderComplete, setConfirmationOrder,
@@ -25,6 +27,8 @@ const OrderComplete = ({
   const handleOrderCompletion = () => {
     onOrderComplete();
     setModalVisible(false);
+    setConfirmationOrder(null);
+    form.resetFields();
   };
 
   const StepOne = () => (
@@ -52,14 +56,30 @@ const OrderComplete = ({
 
   const StepTwo = () => (
     <>
-      <div>{ order.id }</div>
-      <div>{ order.customer.name }</div>
-      <div>Order Products</div>
-      { order.order_products.map((orderProduct) => (
-        <div>
-          { orderProduct.product.name }
-        </div>
-      ))}
+      <Title level={4}>Order Details</Title>
+
+      <div>
+        <Text strong>ID: </Text>
+        { order.id }
+      </div>
+      <div>
+        <Text strong>Customer Name: </Text>
+        { order.customer.name }
+      </div>
+      <div><Text strong>Order Products: </Text></div>
+      <ul>
+        { order.order_products.map((orderProduct) => (
+          <li>
+            { orderProduct.product.name }
+            &nbsp;
+            <Text code>
+              x
+              {orderProduct.quantity}
+            </Text>
+          </li>
+        ))}
+      </ul>
+
       <Button type="primary" htmlType="submit" onClick={handleOrderCompletion}>
         Complete Order
       </Button>

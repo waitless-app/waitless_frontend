@@ -46,13 +46,26 @@ const Orders = () => {
     reconnectInterval: 3000,
   });
 
+  const handleIncomingMessage = ({ type: messageType, data: order }) => {
+    if (messageType === 'update_order') {
+      const mergedOrders = mergeArrayWithObject(orders, order);
+      queryClient.setQueryData('orders', { data: mergedOrders });
+      message.info('Order Status Updated');
+    }
+
+    if (messageType === 'order.notification') {
+      const orderNotExist = !orders.some(({ id }) => id === order.id);
+      if (orderNotExist) {
+        queryClient.setQueryData('orders', { data: [order, ...orders] });
+        message.info('You have new Order!');
+      }
+    }
+  };
+
   useEffect(() => {
     if (lastMessage) {
       const msg = JSON.parse(lastMessage.data);
-      if (msg.type === 'update_order') {
-        const mergedOrders = mergeArrayWithObject(orders, msg.data);
-        queryClient.setQueryData('orders', { data: mergedOrders });
-      }
+      handleIncomingMessage(msg);
     }
   }, [lastMessage]);
 
@@ -95,7 +108,6 @@ const Orders = () => {
   };
 
   const handleStatusChange = (row) => {
-    console.log(row);
     if (row.status === 'ACCEPTED') {
       acceptOrder(row);
     } else if (row.status === 'READY') {
