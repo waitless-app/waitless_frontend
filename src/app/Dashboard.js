@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Layout, Menu, Row, Col, Avatar, Dropdown, Statistic, Card,
+  Layout, Menu, Row, Col, Avatar, Dropdown,
 } from 'antd';
 import {
   ShopOutlined, TagsOutlined, MessageOutlined, UserOutlined,
@@ -15,24 +15,10 @@ import Premises from '../premises/Premises';
 import Menus from '../menu/Menus';
 import Product from '../product/Product';
 import Orders from '../orders/Orders';
+import Home from '../home/Home';
 
 const { Header, Content, Sider } = Layout;
 
-const Home = () => (
-  <Row gutter={16}>
-    <Col span={12}>
-      <Card>
-        <Statistic title="Active Orders" value="N/A" />
-      </Card>
-    </Col>
-    <Col span={12}>
-      <Card>
-        <Statistic title="Account Balance (USD)" value={0} precision={2} />
-      </Card>
-    </Col>
-  </Row>
-);
-// @ts-ignore
 const Dashboard = () => {
   const history = useHistory();
   const match = useRouteMatch();

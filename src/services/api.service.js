@@ -59,6 +59,9 @@ export const PremisesService = {
   delete(slug) {
     return ApiService.delete(`premises/premises/${slug}/`);
   },
+  getStatistic(slug) {
+    return ApiService.query(`premises/premises/${slug}/statistic`);
+  },
 };
 
 export const MenuService = {
