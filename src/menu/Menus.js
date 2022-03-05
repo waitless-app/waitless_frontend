@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   Button,
-  Card, Menu, Dropdown, Select, Skeleton, Space,
+  Card, Menu, Dropdown, Select, Skeleton, Space, Col, Row, message,
 } from 'antd';
 import {
   CheckCircleOutlined, EditOutlined, EllipsisOutlined,
@@ -17,37 +17,49 @@ import { UpdateMenu } from './UpdateMenu';
 import { EmptyListWrapper } from '../core/EmptyListWrapper';
 
 const Menus = () => {
-  // TODO find a way to use cached data if exist if not refetch it
-  const [count, setCount] = useState();
+  const [premisesId, setPremisesId] = useState();
   const { path, url } = useRouteMatch();
   const history = useHistory();
+
+  const queryClient = useQueryClient();
+
   const {
     isFetching: isLoading, data,
   } = useQuery('premises', () => PremisesService.query(), {
     onSuccess({ data: initialPremises }) {
-      if (initialPremises.length) setCount(initialPremises[0].id);
+      if (initialPremises.length) setPremisesId(initialPremises[0].id);
     },
   });
+
   const { data: menus, isFetching } = useQuery(
-    ['menus', count],
-    () => MenuService.query(count),
+    ['menus', premisesId],
+    () => MenuService.query(premisesId),
     {
-      // The query will not execute until the userId exists
-      enabled: !!count,
+      enabled: !!premisesId,
     },
   );
 
+  const { mutate: setDefaultMenu } = useMutation((menu) => MenuService.setDefault(menu), {
+    onSuccess: () => {
+      message.success('Menu set as default');
+      queryClient.invalidateQueries(['menus', premisesId]);
+    },
+    onError: () => {
+      message.error('Error setting up menu as default');
+    },
+  });
+
   const nameOrEmpty = (premises) => {
-    const element = premises?.find(((item) => item.id === count));
+    const element = premises?.find(((item) => item.id === premisesId));
     return typeof element === 'object' ? element.name : '';
   };
 
   const redirectMenuEdit = (menu) => {
     history.push(`${url}/edit/${menu}`);
   };
-  const cardDropdownOverlay = (
+  const cardDropdownOverlay = (menuId) => (
     <Menu>
-      <Menu.Item key="1">Make Default</Menu.Item>
+      <Menu.Item key="1" onClick={() => setDefaultMenu(menuId)}>Make Default</Menu.Item>
     </Menu>
   );
 
@@ -79,23 +91,28 @@ const Menus = () => {
         </div>
       ) : (
         <div>
-          { menus?.data.map((menu) => (
-            <Card
-              title={menu.name}
-              extra={menu.is_default ? <CheckCircleOutlined title="This is default menu" /> : ''}
-              style={{ width: 300, marginTop: 16 }}
-              actions={[
-                <EditOutlined onClick={() => redirectMenuEdit(menu.id)} key="edit" />,
-                <Dropdown overlay={cardDropdownOverlay}>
-                  <EllipsisOutlined key="ellipsis" />
-                </Dropdown>,
-              ]}
-            />
-          )) }
+          <Row gutter={16}>
+            { menus?.data.map((menu) => (
+              <Col>
+                <Card
+                  title={menu.name}
+                  extra={menu.is_default ? <CheckCircleOutlined title="This is default menu" /> : ''}
+                  style={{ width: 300, marginTop: 16 }}
+                  actions={[
+                    <EditOutlined onClick={() => redirectMenuEdit(menu.id)} key="edit" />,
+                    <Dropdown overlay={cardDropdownOverlay(menu.id)}>
+                      <EllipsisOutlined key="ellipsis" />
+                    </Dropdown>,
+                  ]}
+                >
+                  { menu.description}
+                </Card>
+              </Col>
+            )) }
+          </Row>
         </div>
       )
   );
-  // TODO if premises Array is empty, do not display Menu View
   return (
     <>
       <Route exact path={path}>
@@ -108,7 +125,7 @@ const Menus = () => {
                 value: premises.id,
                 label: premises.name,
               }))}
-              onSelect={(value) => setCount(value)}
+              onSelect={(value) => setPremisesId(value)}
               loading={isLoading}
               defaultValue={data?.data[0]?.id}
             />
@@ -120,7 +137,7 @@ const Menus = () => {
         exact
         path={`${path}/create`}
         render={(props) => (
-          <CreateMenu {...props} premises={data?.data} defaultPremise={count} />
+          <CreateMenu {...props} premises={data?.data} defaultPremise={premisesId} />
         )}
       />
       <Route

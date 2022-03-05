@@ -16,9 +16,9 @@ export const UpdateMenu = ({ premises }) => {
     mutate: updateMenu,
     isLoading: isMutating,
   } = useMutation((menu) => MenuService.update(menu.id, menu), {
-    onSuccess: () => {
-      message.success('Premises updated');
-      queryClient.invalidateQueries(['menus', 2]);
+    onSuccess: ({ data: res }) => {
+      message.success('Menu updated');
+      queryClient.invalidateQueries(['menus', res.premises]);
       history.push('/dashboard/menus');
     },
     onError: () => {

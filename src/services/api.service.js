@@ -77,6 +77,9 @@ export const MenuService = {
   update(slug, params) {
     return ApiService.update('product/menu', slug, params);
   },
+  setDefault(slug) {
+    return ApiService.post(`product/menu/${slug}/make_default/`);
+  },
 };
 
 export const ProductService = {
