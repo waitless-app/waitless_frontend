@@ -17,8 +17,8 @@ export const CreatePremises = () => {
       message.success('Premises created');
       queryClient.invalidateQueries('premises');
     },
-    onError: () => {
-      message.error('Error');
+    onError: (error) => {
+      message.error(error.response.data.message);
     },
   });
 
