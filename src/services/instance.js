@@ -13,7 +13,7 @@ instance.interceptors.request.use(
       // eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${token}`;
     }
-    // config.headers.common['Access-Control-Allow-Origin'] = '*';
+    // approach from axios docs
     // eslint-disable-next-line no-param-reassign
     config.headers.common['X-Source-Web'] = true;
     return config;

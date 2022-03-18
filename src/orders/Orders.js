@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading  */
-/* eslint-disable react/prop-types  */
 import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 import {
@@ -7,7 +5,7 @@ import {
 } from 'react-router-dom';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import {
-  Col, message, Row, Typography,
+  Col, message, Row, Spin, Typography,
 } from 'antd';
 import { OrderService } from '../services/api.service';
 import OrdersList from './OrdersList/OrdersList';
@@ -19,9 +17,8 @@ import OrderComplete from './OrderComplete/OrderComplete';
 const { Text } = Typography;
 
 const Orders = () => {
+  const queryClient = useQueryClient();
   const { path } = useRouteMatch();
-
-  const [confirmationOrder, setConfirmationOrder] = useState();
 
   const {
     isLoading, error, data: orders,
@@ -31,11 +28,8 @@ const Orders = () => {
     staleTime: 1000 * 60,
   });
 
-  const queryClient = useQueryClient();
-
   const token = getItem('access_token');
-  const [socketUrl] = useState(`${WS_URL}/?token=${token}`);
-
+  const socketUrl = `${WS_URL}/?token=${token}`;
   const {
     lastMessage,
     readyState,
@@ -46,7 +40,15 @@ const Orders = () => {
     reconnectInterval: 3000,
   });
 
-  const handleIncomingMessage = ({ type: messageType, data: order }) => {
+  const connectionStatus = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+  }[readyState];
+
+  const handleWSMessage = ({ type: messageType, data: order }) => {
     if (messageType === 'update_order') {
       const mergedOrders = mergeArrayWithObject(orders, order);
       queryClient.setQueryData('orders', { data: mergedOrders });
@@ -65,58 +67,41 @@ const Orders = () => {
   useEffect(() => {
     if (lastMessage) {
       const msg = JSON.parse(lastMessage.data);
-      handleIncomingMessage(msg);
+      handleWSMessage(msg);
     }
   }, [lastMessage]);
 
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
-
-  const acceptOrder = (order) => {
+  const updateOrderStatus = (type, order) => {
     const payload = {
-      type: 'accept.order',
+      type,
       data: {
-        order: order.id,
-      },
-    };
-    sendMessage(JSON.stringify(payload));
-  };
-
-  const readyOrder = (order) => {
-    const payload = {
-      type: 'ready.order',
-      data: {
-        order: order.id,
-      },
-    };
-    sendMessage(JSON.stringify(payload));
-  };
-
-  const completeOrder = (order) => {
-    const payload = {
-      type: 'complete.order',
-      data: {
-        order: order.id,
+        order,
       },
     };
     sendMessage(JSON.stringify(payload));
   };
 
   const handleStatusChange = (row) => {
-    if (row.status === 'ACCEPTED') {
-      acceptOrder(row);
-    } else if (row.status === 'READY') {
-      readyOrder(row);
-    } else if (row.status === 'COMPLETED') {
-      completeOrder(row);
+    const { status, id: orderId } = row;
+
+    const statuses = {
+      ACCEPTED: 'accept.order',
+      READY: 'ready.order',
+      COMPLETED: 'complete.order',
+    };
+
+    if (row.status in statuses) {
+      updateOrderStatus(statuses[status], orderId);
     } else {
       message.error(`Update to ${row.status} is not possible yet`);
     }
+  };
+
+  const [confirmationOrder, setConfirmationOrder] = useState();
+  const onCodeSubmit = async (formValues) => {
+    const { data } = await OrderService.confirmPickupCode({ pickup_code: formValues.pickup_code })
+      .catch((err) => message.error(err.response.data.message));
+    setConfirmationOrder(data);
   };
 
   if (error) {
@@ -124,14 +109,8 @@ const Orders = () => {
   }
 
   if (isLoading) {
-    return (<div>Data is loading.</div>);
+    return (<Spin tip="Loading..." spinning={isLoading} />);
   }
-
-  const onCodeSubmit = async (formValues) => {
-    const { data } = await OrderService.confirmPickupCode({ pickup_code: formValues.pickup_code })
-      .catch((err) => message.error(err.response.data.message));
-    setConfirmationOrder(data);
-  };
 
   return (
     <>
