@@ -1,3 +1,40 @@
+
+
+![Waitless - contacless que ordering system](https://i.imgur.com/WpdEl3y.jpg)
+
+
+<div align="center">
+  <h1>Waitless Frontend</h1>
+</div>
+
+<div align="center">
+  <h2>React, React Query, AntD</h2>
+</div>
+
+
+
+<div align="center">
+  <strong>Web Queue Ordering App</strong>
+</div>
+
+
+
+<div align="center">
+	 Live queue app for premises owners, helping keeping distance and saving time for staying in line. Built with Django, React and Vue.
+</div>
+<br>
+
+[![Watch the video](https://i.imgur.com/Uy4WqG2.png)](https://streamable.com/bmxaed)
+<br>
+
+
+## Frontend Details - Vendor App
+
+ - Built with React 17.0.2
+ -  [Ant Design](https://ant.design/) for fast UI development
+ - [React Query](https://github.com/tannerlinsley/react-query) to keep data fresh
+ - [useWebsocket](https://github.com/robtaussig/react-use-websocket) to wrap Websocket API
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
